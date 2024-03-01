@@ -1,0 +1,58 @@
+{
+  "name": "squadstrat",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "server": "live-server --port=8000 ./public",
+    "dev": "webpack --watch --env NODE_ENV=development --config dev.config.js",
+    "build": "webpack --watch --env NODE_ENV=production --config prod.config.js",
+    "buildOnce": "webpack --env NODE_ENV=production --config prod.config.js",
+    "elint" : "npx eslint src\\** --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/squadstrat/squadstrat.git"
+  },
+  "keywords": [
+    "SquadGame",
+    "map"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/dmass/squadstrat/issues"
+  },
+  "homepage": "https://gitlab.com/dmass/squadstrat#readme",
+  "dependencies": {
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "gl-matrix": "3.3.0",
+    "htm": "3.0.4",
+    "immer": "^9.0.6",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-redux": "7.2.1",
+    "redux": "4.0.5",
+    "redux-thunk": "2.3.0",
+    "socket.io-client": "^4.7.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/peerjs": "1.1.0",
+    "@types/react-dom": "16.9.8",
+    "@types/react-redux": "7.1.9",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "eslint": "^8.56.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.33.2",
+    "live-server": "^1.1.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^4.5.2",
+    "webpack": "^5.64.4",
+    "webpack-cli": "^4.5.0",
+    "webpack-merge": "^5.7.3"
+  }
+}

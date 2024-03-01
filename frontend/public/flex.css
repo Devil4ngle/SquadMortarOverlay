@@ -1,0 +1,16 @@
+.flexRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.flexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexItem {
+  flex: 0 1 auto;
+}
+.flexItemFill{
+  flex: 0 1 100%;
+}

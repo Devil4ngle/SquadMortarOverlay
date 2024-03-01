@@ -1,0 +1,182 @@
+:root {
+  --font-family: "Inconsolata", "Source Code Pro", Courier, monospace;
+
+  --text-default:  rgb(222, 222, 222);
+  --text-red: rgb(255, 34, 34);
+  --text-green: rgb(42, 210, 0);
+  --text-blue: rgb(0, 89, 255);
+  --text-yellow: rgb(255, 200, 10);
+  --text-pink: rgb(230, 0, 126);
+  --text-grey-b: rgb(100, 100, 100);
+
+  --bg-dark-grey: rgb(15, 15, 15);
+  --bg-dark-grey-a: rgb(20, 20, 20);
+  --bg-dark-grey-b: rgb(25, 25, 25);
+  --bg-dark-grey-c: rgb(45, 45, 45);
+  --bg-grey: rgb(30, 30, 30);
+  --bg-grey-a: rgb(70, 70, 70);
+  --bg-grey-b: rgb(100, 100, 100);
+}
+
+html{
+  height:100% /* fuck you, mozilla */
+}
+body {
+  margin: 0;
+  height: 100%; /* fuck you, mozilla */
+  overflow: hidden;
+  color: rgb(200, 200, 200);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 400;
+}
+.content {
+  height:100% /* fuck you, mozilla */
+}
+
+.hidden {
+  display: none;
+}
+
+#tooltip {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 3px 3px;
+  min-width: 7em;
+  user-select: none;
+}
+#leftPanel /* affects static page i.e. while loading*/
+.leftPanel,
+.rightPanel,
+#tooltip {
+  /*position: absolute;*/
+  z-index: 9;
+  background-color: var(--bg-dark-grey-a);
+  
+}
+#leftPanel /* affects static page i.e. while loading*/
+.leftPanel{
+  left: 0;
+  /*height:100%;*/
+  width: 240px;
+  padding: 0px 0px 0 0px;
+  position: absolute;
+}
+.rightPanel{
+  position: absolute;
+  right: 0;
+  height:300px;
+  width: 150px;
+  padding: 3px;
+}
+.hint {
+  color: var(--bg-grey-b);
+  font-size: 10px;
+}
+.link:visited{
+  color: var(--bg-grey-b);
+}
+#repoLink{
+    left: 0;
+    bottom: 0;
+    /*height:100%;*/
+    padding: 0px 0px 0 0px;
+    position: absolute;
+    background-color: var(--bg-dark-grey-a);
+}
+/* .grey{
+  background-color: #333;
+}*/
+
+.mapCanvas{
+  touch-action: manipulation;
+}
+.white{
+  color: white
+}
+.grey{
+  color: grey
+}
+.green{
+  color: var(--text-green);
+}
+.red{
+  color:var(--text-red);
+}
+.blue{
+  color: var(--text-blue);
+}
+.yellow{
+  color: var(--text-yellow);
+}
+.pink{
+  color: var(--text-pink);
+}
+.greyB{
+  color: var(--text-grey-b);
+}
+
+.black{
+  color: black;
+}
+.bold{
+  font-weight: bold;
+}
+
+.bgimgTest{
+  background-image: url("options/albasrah_option.png");
+}
+.mapOptionImage{
+  padding: 0px 0;
+  width: 90px;
+  background-repeat: no-repeat;
+}
+.mapOptionLabel{
+  padding: 5px 10px;
+}
+
+.weaponOptionImage{
+  padding: 0px 0;
+  width: 90px;
+  background-repeat: no-repeat;
+  /*background-color: var(--bg-grey-a);*/
+  background-position-x: -2px;
+}
+.weaponOptionLabel{
+  padding: 5px 10px;
+}
+
+.numberInputLabel{
+  box-sizing: border-box;
+  height: 22px;
+  padding-top: 4px;
+}
+
+.optionTest{
+  background-image: url("options/albasrah_option.png");
+  font-size: x-large;
+  width: 250px;
+  vertical-align: center;
+  height: 25px;
+  color:  rgb(255, 200, 10);
+  font-weight: 900;
+  -webkit-text-stroke: 1px rgb(42, 42, 42);
+  text-align: center;
+}
+
+.fill{
+  width:100%;
+  height:100%;
+}
+.separator{
+  margin-top: 5px;
+  border-top: 1px solid var(--bg-grey-a);
+  /*
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--bg-dark-grey);
+  */
+  margin-bottom: 5px;
+  content: "";
+  width:100%;
+}

@@ -1,0 +1,158 @@
+.textInput{
+  font-family: var(--font-family);
+  background-color: var(--bg-grey-a);
+  color: var(--text-default);
+  box-sizing: "border-box";
+  border: none;
+  height: 100%;
+  padding: 0;
+  padding-left: 1px;
+  width: 100%;
+}
+.textInput:focus{
+  outline:none;
+  background-color: var(--bg-grey-b);
+}
+
+.numberInput{
+  text-align: center;
+  padding-left: 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+  width: 40px;
+  height: 22px
+}
+
+.sessionTextInput{
+  font-family: var(--font-family);
+  background-color: var(--bg-grey-a);
+  color: var(--text-default);
+  font-size: 14px;
+  box-sizing: border-box;
+  border: none;
+  height: 100%;
+  padding: 0;
+  padding-left: 2px;
+  padding-top: 4px;
+  padding-bottom: 0px;
+  width: 100%;
+  resize: none;
+}
+.sessionTextInput:focus{
+  outline:none;
+  background-color: var(--bg-grey-b);
+}
+.toggleButton{
+  font-family: var(--font-family);
+  height: 22px;
+  width: 40px;
+  /*border: 1px solid black; */
+  border:none;
+  background-color: var(--bg-grey-a);
+  min-width: 40px;
+  min-height: 22px;
+  outline: none;
+  user-select: none; /* prevent highlighting */
+  cursor: pointer;
+}
+.toggleButton:hover {
+  background-color: var(--bg-grey-b);
+}
+.collapseButton{
+  font-family: var(--font-family);
+  height: 14px;
+  width: 100%;
+  /*border: 1px solid black; */
+  border:none;
+  background-color: var(--bg-grey-a);
+  outline: none;
+  user-select: none; /* prevent highlighting */
+  padding: 0;
+  box-sizing: border-box;
+  cursor:pointer;
+}
+.collapseButton:hover {
+  background-color: var(--bg-grey-b);
+}
+
+
+.button{
+  height: 20px;
+  color: var(--text-default);
+  background-color: var(--bg-grey-a);
+  min-width: 40px;
+  min-height: 20px;
+  border: none;
+  outline: none;
+  cursor:pointer;
+
+}
+.button:focus {
+  outline: none;
+}
+.button:hover {
+  background-color: var(--bg-grey-b);
+}
+/*
+vertical align for content
+  i have no idea why this works 
+  -- causes issues with content fitting into div
+.divButton:before {
+   
+  content: "";
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+*/
+
+.divButton{
+  height: 22px;
+  line-height: 22px; /* v-align text */
+  min-width: 40px;   /* aesthetic proportions for small buttons */
+  user-select: none; /* prevent highlighting */
+  box-sizing: border-box; /* layout independent of border style:  */
+  background-color: var(--bg-grey-a);
+  padding-left: 5px;
+  padding-right: 5px;
+  outline: none;
+  cursor:pointer;
+  text-align: center;
+}
+.divButton:hover {
+  background-color: var(--bg-grey-b);
+}
+
+.divButtonBorder{
+  /*line-height: 20px; /* v-align text */
+  border: 1px solid black;
+}
+
+.dropdown {
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  user-select: none; /* prevent highlighting */
+  /* optional: */
+  width: 100%;
+}
+.dropdownSelected {
+   /* optional: */
+  background-color: var(--bg-grey-a);
+}
+.dropdownSelected:hover {
+  /* optional: */
+ background-color: var(--bg-grey-b);
+}
+.dropdownChildren{
+  position: absolute;
+  z-index: 999;
+   /* optional: */
+  box-sizing: border-box;
+  width: 100%;
+  background-color: var(--bg-grey-a);
+  border-top: 1px solid black;
+}
+.dropdownChild:hover{
+  background-color: var(--bg-grey-b);
+}

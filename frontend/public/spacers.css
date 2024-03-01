@@ -1,0 +1,13 @@
+.h2{width: 2px; min-width: 2px; /*height: 100%; causes div height to be 0 ))))))*/}
+.h3{width: 3px; min-width: 3px;}
+.h4{width: 4px; min-width: 4px;}
+.h5{width: 5px; min-width: 5px;}
+.h10{width: 10px; min-width: 10px;}
+.h15{width: 15px; min-width: 15px;}
+
+.v2{height: 2px; width: 100%;}
+.v3{height: 3px; width: 100%;}
+.v4{height: 4px; width: 100%;}
+.v5{height: 5px; width: 100%;}
+.v10{height: 10px; width: 100%;}
+.v15{height: 15px; width: 100%;}

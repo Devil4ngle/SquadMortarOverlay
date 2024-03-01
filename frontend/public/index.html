@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Squad Mortar Overlay</title>
+  <link rel="icon" type="image/png" href="icon.ico">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="flex.css">
+  <link rel="stylesheet" href="spacers.css">
+  <link rel="stylesheet" href="input.css">
+  <link rel="stylesheet" href="tables.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;600;700&family=Noto+Serif+JP:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <div id="summary" style="display: none;">
+    <br>
+    Squad mortar and rocket calculator
+  </div>
+  <div class="flexRow content">
+    <div class="flexItem" id="leftPanel"> loading... </div>
+    <canvas class="flexItem mapCanvas" id="canvas"></canvas>
+  </div>
+  <div id="tooltip"></div>
+  <canvas id="hmCanvas" class="flexItem hidden" width="1000px", height="1000px"></canvas>
+  <img id="heightmapImage" class="hidden" src="1x1.jpg"></img>
+  <img id="s5image"  class="hidden"></img>
+  <canvas id="s5canvas" class="flexItem hidden", width="1000px", height="1000px"></canvas>
+  <img id="bm21image"  class="hidden"></img>
+  <canvas id="bm21canvas" class="flexItem hidden", width="1000px", height="1000px"></canvas>
+  <canvas id="contourmap_canvas" class="flexItem hidden", width="1000px", height="1000px"></canvas>
+  <!-- -->
+  <div id="preloadContainer" style="display: none;"></div>
+  <!-- -->
+  <script src="app.js"></script>
+  <!--script> 
+    require("main"); 
+  </script-->
+</body>
+</html>
