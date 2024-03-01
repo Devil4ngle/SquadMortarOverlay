@@ -13,4 +13,4 @@
 
 Work in Progress will be out soon. 
 
-[Squad Mortar Overlay](https://discord.gg/Qc5y4satdz).
+[Squad Mortar Overlay Discord](https://discord.gg/Qc5y4satdz).
