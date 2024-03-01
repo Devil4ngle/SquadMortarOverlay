@@ -36,18 +36,6 @@ export const removeTarget: (entityId: EntityId) => EntityAction =
     payload: { entityId }
   })
 
-export const syncTargets: (state: any) => EntityAction =
-  (state) => ({
-    type: EntityActionType.syncTargets,
-    payload: { state }
-  })
-
-export const syncMap: (state: any, active: boolean, isToggle: boolean) => EntityAction =
-  (state, active, isToggle) => ({
-    type: EntityActionType.syncMap,
-    payload: { state, active, isToggle }
-  })
-
 export const removeAllTargets: () => EntityAction =
   () => ({
     type: EntityActionType.removeAllTargets,

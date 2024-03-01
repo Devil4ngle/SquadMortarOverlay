@@ -4,7 +4,7 @@ import { changeMap, newUIStateWriteAction as writeUIState, newUserSettingsWriteA
 import { toggleButton, unstyledToggleButton } from '../common/toggleButton'
 import { Dropdown } from '../common/dropdown'
 import { type UIState, type UserSettings } from './types'
-import { pickActiveWeapon, removeAllTargets, setWeaponActive, setWeaponHeightOverGround as setWeaponHeightOverGroundMeters, syncMap, syncTargets } from '../world/actions'
+import { pickActiveWeapon, removeAllTargets, setWeaponActive, setWeaponHeightOverGround as setWeaponHeightOverGroundMeters } from '../world/actions'
 import { type EntityId, type Weapon, type World } from '../world/types'
 import { canonicalEntitySort, getEntitiesByType } from '../world/world'
 import { type WeaponType } from '../world/components/weapon'
@@ -388,7 +388,7 @@ const extraButtons = (props: { userSettings: UserSettings, uiState: UIState } & 
     className: 'flexRow'
   }, [
     div({
-      style: { "width": "100%" },
+      style: { width: '100%' },
       className: 'divButton ',
       title: 'Check out Squad Mortar Overlay!',
       onClick: () => window.open('https://github.com/Devil4ngle/squadmortar', '_blank')
@@ -415,10 +415,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   onChangeFontSize: (e: any) => dispatch(writeUserSettings('fontSize', parseInt(e.target.value))),
   onChangeWeaponHeightOverGround: (entityId: EntityId) => (e: any) => dispatch(setWeaponHeightOverGroundMeters(entityId, parseInt(e.target.value))), // dispatch(writeUserSettings("extraWeaponHeight", parseInt(e.target.value))),
   onClickRemoveAllTargets: (e: any) => dispatch(removeAllTargets()),
-  onClickSync: (e: any) => dispatch(syncTargets(e)),
-  onClickSyncMap: (e: any, active: boolean, isToggle: boolean) => dispatch(syncMap(e, active, isToggle)),
   onChangeDeleteMode: (e: any) => dispatch(writeUserSettings('deleteMode', e.target.value)),
-  onChangeAlwaysSyncMap: (e: any) => dispatch(writeUserSettings('alwaysSyncMap', e.target.value)),
   onChangeExtraButtons: (e: any) => dispatch(writeUserSettings('extraButtonsAlwaysShown', e.target.value)),
   onChangeWeaponCreationMode: (e: any) => dispatch(writeUIState('weaponCreationMode', e.target.value)),
   setWeaponActive: (entityId: EntityId, newState: boolean) => dispatch(setWeaponActive(entityId, newState)),

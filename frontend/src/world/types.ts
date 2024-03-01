@@ -19,8 +19,6 @@ export enum EntityActionType {
   setAll = 'ENTITY_SET_ALL',
   remove = 'ENTITY_REMOVE',
   removeAllTargets = 'ENTITY_REMOVE_ALL_TARGETS',
-  syncTargets = 'SYNC_TARGETS',
-  syncMap = 'SYNC_MAP',
 }
 
 export type EntityAction =
@@ -29,15 +27,6 @@ export type EntityAction =
   | { type: EntityActionType.setAll, payload: { components: SerializableComponents } }
   | { type: EntityActionType.remove, payload: HasEntityId }
   | { type: EntityActionType.removeAllTargets, payload: {} }
-  | { type: EntityActionType.syncTargets, payload: { state: any } }
-  | {
-    type: EntityActionType.syncMap, payload: {
-      active: boolean
-      state: any
-      isToggle: boolean
-    }
-  }
-
 export enum TransformActionType {
   moveTo = 'TRANSFORM_MOVE_TO',
   moveBy = 'TRANSFORM_MOVE_BY'

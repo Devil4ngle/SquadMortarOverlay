@@ -5,7 +5,6 @@ import { type WeaponType } from '../world/components/weapon'
 
 export enum UserActionType {
   removeAllTargets = 'USER_REMOVE_ALL_TARGETS',
-  syncTargets = 'USER_SYNC_TARGETS'
 }
 export enum UserSettingsActionType {
   write = 'USER_SETTINGS_WRITE'
@@ -31,7 +30,6 @@ export interface UserSettings {
 
   extraButtonsAlwaysShown: boolean
   deleteMode: boolean
-  alwaysSyncMap: boolean
 
   leftPanelCollapsed: boolean
 }
