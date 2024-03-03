@@ -12,7 +12,7 @@ const defaultContourmap = (): Contourmap => ({
   transform: mat4.create(),
   texture: {
     transform: mat4.create(),
-    source: '1x1.jpg',
+    source: 'maps/1x1.jpg',
     size: vec3.fromValues(1, 1, 0),
     image: new Image()
   },

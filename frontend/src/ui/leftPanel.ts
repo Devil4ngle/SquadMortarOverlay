@@ -382,17 +382,6 @@ const extraButtons = (props: { userSettings: UserSettings, uiState: UIState } & 
       title: 'Remove all targets',
       onClick: props.onClickRemoveAllTargets
     }, 'Remove all targets')
-  ]),
-  div({ className: 'v2' }, []),
-  div({
-    className: 'flexRow'
-  }, [
-    div({
-      style: { width: '100%' },
-      className: 'divButton ',
-      title: 'Check out Squad Mortar Overlay!',
-      onClick: () => window.open('https://github.com/Devil4ngle/squadmortar', '_blank')
-    }, 'Check out Squad Mortar Overlay!')
   ])
 ]
 

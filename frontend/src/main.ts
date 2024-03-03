@@ -3,7 +3,6 @@ import { setupEventsAndInit } from './events'
 import * as M from 'gl-matrix'
 import { changeMap, settingsToActions } from './ui/actions'
 import { drawAll } from './render/canvas'
-import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { makeLeftPanel, mapOptions } from './ui/leftPanel'
 import { loadUserSettings } from './ui/persistence'
@@ -41,14 +40,8 @@ mapOptions.forEach(o => {
   fragment.appendChild(link)
 })
 document.getElementById('preloadContainer')?.append(fragment)
-/*
-to be optimized:
-- mouse movement triggers rerender
-    use middleware to trigger canvas updates similar to replication?
--
-*/
+
 const $leftPanel = document.getElementById('leftPanel')!
-const h = React.createElement
 
 ReactDOM.render(makeLeftPanel(store), $leftPanel)
 
@@ -58,11 +51,12 @@ socket.addEventListener('open', (event) => {
   console.log('Connection opened')
 })
 
-// Listen for messages
 socket.addEventListener('message', (event) => {
-  console.log('Message from server ', event.data)
-})
-
-socket.addEventListener('error', (event) => {
-  console.log('Message from server ')
+  if (event.data === 'Map') {
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(store.getState().minimap.texture.source)
+    }
+  } else {
+    store.getState().minimap.texture.image.src = event.data
+  }
 })

@@ -8,45 +8,50 @@ import webbrowser
 import threading
 from pynput import keyboard
 import asyncio
-import websockets
-from pynput import keyboard
 from websockets.server import serve
-
-
-# This is an asynchronous function that sends a message to the client
-async def send_message(message):
-    uri = "ws://127.0.0.1:12345"
-    async with websockets.connect(uri) as websocket:
-        await websocket.send(message)
+import keyboard
+from scripts.imageLayering import overlay_images
 
 async def handler(websocket):
-        while True:
-            await websocket.send("hello")
-            print("ssadsd")
-            await asyncio.sleep(2)
-        def on_press(key):
-            if key == keyboard.KeyCode.from_char('k'):
-               print("ssadsd")
-               websocket.send('test')
-            # Start listening for key presses
-        listener = keyboard.Listener(on_press=on_press)
-        listener.start()
-        websocket.send('test')
+    while True:
+        if keyboard.is_pressed('k'):
+             await websocket.send('Map')
+             response = await websocket.recv()
+             filename = "merged/merged_{}.png".format(int(time.time()))
+             print(filename)
+             overlay_images(response,filename)
+             await websocket.send(filename)
+             await asyncio.sleep(0.5)
 
 async def main():
-    try:
-        async with serve(handler, "localhost", 12345):
-            await asyncio.Future()  # run forever
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    async with serve(handler, "localhost", 12345):
+        await asyncio.Future()  # run forever
 
-def start_loop(loop):
+def start_loop():
+    loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(main())
 
-new_loop = asyncio.new_event_loop()
-t = threading.Thread(target=start_loop, args=(new_loop,))
-t.start()
+websocket_thread = threading.Thread(target=start_loop)
+websocket_thread.start()
+
+label = tk.Label(text='1399.5, 331.2', font=('Arial Black','20'))
+label.master.overrideredirect(True)
+label.master.geometry("+700+0")
+label.master.lift()
+label.master.wm_attributes("-topmost", True)
+label.master.wm_attributes("-disabled", True)
+label.master.wm_attributes("-transparentcolor", "white")
+label.pack()
+
+label = tk.Label(text='1329.5, 331.2', font=('Arial Black','20'))
+label.master.overrideredirect(True)
+label.master.geometry("+700+100")
+label.master.lift()
+label.master.wm_attributes("-topmost", True)
+label.master.wm_attributes("-disabled", True)
+label.master.wm_attributes("-transparentcolor", "white")
+label.pack()
 
 # Create the main window
 root = tk.Tk()
@@ -101,6 +106,7 @@ server_thread.start()
 def on_closing():
     httpd.shutdown()  # Shut down the server
     server_thread.join()  # Wait for the server thread to finish
+    websocket_thread.join()  # Wait for the webscoket thread to finish
     root.destroy()  # Destroy the window
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
