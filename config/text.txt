@@ -1,0 +1,3 @@
+Optional Improvements:
+  • Tab -> Right site of screen -> Map Icon Scale 0.3
+  • Tab -> Right site of screen -> Grid Opacity 0"
