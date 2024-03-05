@@ -10,48 +10,61 @@ from pynput import keyboard
 import asyncio
 from websockets.server import serve
 import keyboard
-from scripts.imageLayering import overlay_images
+# from scripts.imageLayering import overlay_images
 
-async def handler(websocket):
+async def handle_map(websocket):
+    await websocket.send('Open')
     while True:
         if keyboard.is_pressed('k'):
-             await websocket.send('Map')
-             response = await websocket.recv()
-             filename = "merged/merged_{}.png".format(int(time.time()))
-             print(filename)
-             overlay_images(response,filename)
-             await websocket.send(filename)
-             await asyncio.sleep(0.5)
+            await websocket.send('Map')
+            response = await websocket.recv()
+            filename = "merged/merged_{}.png".format(int(time.time()))
+            # overlay_images(response, filename)
+            await websocket.send(filename)
+            await asyncio.sleep(0.3)
 
-async def main():
-    async with serve(handler, "localhost", 12345):
+async def handle_coordinates(websocket):
+    await websocket.send('Open')
+    coordinate_window = tk.Toplevel()
+    coordinate_window.overrideredirect(True)
+    coordinate_window.geometry("+10+0")
+    coordinate_window.lift()
+    coordinate_window.wm_attributes("-topmost", True)
+    coordinate_window.wm_attributes("-disabled", True)
+    coordinate_window.wm_attributes("-transparentcolor", "white")
+    # Create a label to display coordinates
+    label = tk.Label(coordinate_window, font=('Arial Black', '20'))
+    label.pack()
+    while True:
+        response = await websocket.recv()
+        label.config(text=response)  # Update label text
+        coordinate_window.update_idletasks()
+        print(response)  # print the coordinates
+
+async def main_coordinates():
+    async with serve(handle_coordinates, "localhost", 12346):
         await asyncio.Future()  # run forever
 
-def start_loop():
+async def main_map():
+    async with serve(handle_map, "localhost", 12345):
+        await asyncio.Future()  # run forever
+
+def start_loop_map():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    loop.run_until_complete(main())
+    loop.run_until_complete(main_map())
 
-websocket_thread = threading.Thread(target=start_loop)
-websocket_thread.start()
+def start_loop_coordinates():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main_coordinates())
 
-label = tk.Label(text='1399.5, 331.2', font=('Arial Black','20'))
-label.master.overrideredirect(True)
-label.master.geometry("+700+0")
-label.master.lift()
-label.master.wm_attributes("-topmost", True)
-label.master.wm_attributes("-disabled", True)
-label.master.wm_attributes("-transparentcolor", "white")
-label.pack()
+websocket_thread_map = threading.Thread(target=start_loop_map)
+websocket_thread_map.start()
 
-label = tk.Label(text='1329.5, 331.2', font=('Arial Black','20'))
-label.master.overrideredirect(True)
-label.master.geometry("+700+100")
-label.master.lift()
-label.master.wm_attributes("-topmost", True)
-label.master.wm_attributes("-disabled", True)
-label.master.wm_attributes("-transparentcolor", "white")
-label.pack()
+websocket_thread_coordinates = threading.Thread(target=start_loop_coordinates)
+websocket_thread_coordinates.start()
+
 
 # Create the main window
 root = tk.Tk()
@@ -106,7 +119,8 @@ server_thread.start()
 def on_closing():
     httpd.shutdown()  # Shut down the server
     server_thread.join()  # Wait for the server thread to finish
-    websocket_thread.join()  # Wait for the webscoket thread to finish
+    websocket_thread_coordinates.join()  # Wait for the webscoket thread to finish
+    websocket_thread_map.join()  # Wait for the webscoket thread to finish
     root.destroy()  # Destroy the window
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
