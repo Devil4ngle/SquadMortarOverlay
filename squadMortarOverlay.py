@@ -10,12 +10,35 @@ from pynput import keyboard
 import asyncio
 from websockets.server import serve
 import keyboard
+from tkinter import simpledialog
+import shutil
+import json
+
 # from scripts.imageLayering import overlay_images
+
+dir_path = "frontend/public/merged"
+if os.path.exists(dir_path):
+    shutil.rmtree(dir_path)
+
+def read_config(key):
+    with open("config/config.json", "r") as config_file:
+            config_data = json.load(config_file)
+            return config_data.get(key, "k")
+    
+def save_config(key,value):
+    with open("config/config.json", "r") as config_file:
+        existing_config = json.load(config_file)
+    existing_config[key] = value
+
+    with open("config/config.json", "w") as config_file:
+        json.dump(existing_config, config_file)
+
+settings = {'hotkey': read_config('hotkey')}
 
 async def handle_map(websocket):
     await websocket.send('Open')
     while True:
-        if keyboard.is_pressed('k'):
+        if keyboard.is_pressed(settings['hotkey']):
             await websocket.send('Map')
             response = await websocket.recv()
             filename = "merged/merged_{}.png".format(int(time.time()))
@@ -60,9 +83,11 @@ def start_loop_coordinates():
     loop.run_until_complete(main_coordinates())
 
 websocket_thread_map = threading.Thread(target=start_loop_map)
+websocket_thread_map.daemon = True
 websocket_thread_map.start()
 
 websocket_thread_coordinates = threading.Thread(target=start_loop_coordinates)
+websocket_thread_coordinates.daemon = True
 websocket_thread_coordinates.start()
 
 
@@ -78,8 +103,12 @@ root.iconbitmap('icon.ico')
 root.resizable(width=False, height=False)
 
 # Create a scrollable text field and insert the provided text
-text = scrolledtext.ScrolledText(root, wrap="word", height=10, state=tk.DISABLED)  # Set wrap to "word" for word wrapping
-text.insert(tk.END, "Your text here...")  # Replace with your text
+text = scrolledtext.ScrolledText(root, wrap="word", height=10, state=tk.NORMAL) 
+with open("config/text.txt", "r") as file:
+    text_content = file.read()
+text.insert(tk.END, text_content)  
+
+text.config(state=tk.DISABLED)
 text.pack(expand=True, fill=tk.BOTH)
 
 # Define button click events
@@ -92,35 +121,41 @@ def open_discord():
 def open_html():
     webbrowser.open("http://localhost:8000/")
 
+def ask_hotkey():
+    new_hotkey = simpledialog.askstring("Input", "Enter the hotkey:", parent=root)
+    if new_hotkey:
+        settings['hotkey'] = new_hotkey
+    save_config('hotkey',new_hotkey)
+    button_hotkey.config(text="Set Hotkey " + settings['hotkey'])
+
+
 # Create buttons
 button_github = tk.Button(root, text="Github", command=open_github)
 button_discord = tk.Button(root, text="Discord", command=open_discord)
 button_html = tk.Button(root, text="Open squadmortar.xyz", command=open_html)
+button_hotkey = tk.Button(root, text="Set Overlay Hotkey. Current: "+ settings['hotkey'], command=ask_hotkey)
 
-# Place buttons at the bottom, each taking 1/3 of the width
+
+# Place buttons at the bottom
+button_hotkey.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 10))
 button_github.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 10))
-button_discord.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5, pady=(5, 10))
-button_html.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 0), pady=(5, 10))
-
-# Change the current working directory
-os.chdir('frontend/public/')
+button_discord.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 10))
+button_html.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 10))
 
 # Define the handler to use for the server
 Handler = http.server.SimpleHTTPRequestHandler
+Handler.directory = 'frontend/public/'
 
 # Define the socket server
 httpd = socketserver.TCPServer(("", 8000), Handler)
 
 # Start the server in a new thread
 server_thread = threading.Thread(target=httpd.serve_forever)
+server_thread.daemon = True
 server_thread.start()
 
 # Define a protocol to close the server and thread when the window is closed
 def on_closing():
-    httpd.shutdown()  # Shut down the server
-    server_thread.join()  # Wait for the server thread to finish
-    websocket_thread_coordinates.join()  # Wait for the webscoket thread to finish
-    websocket_thread_map.join()  # Wait for the webscoket thread to finish
     root.destroy()  # Destroy the window
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
