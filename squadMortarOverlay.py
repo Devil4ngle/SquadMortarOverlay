@@ -146,8 +146,8 @@ def ask_hotkey():
     new_hotkey = simpledialog.askstring("Input", "Enter the hotkey:", parent=root)
     if new_hotkey:
         settings['hotkey'] = new_hotkey
-    save_config('hotkey',new_hotkey)
-    button_hotkey.config(text="Set Hotkey " + settings['hotkey'])
+        save_config('hotkey',new_hotkey)
+    button_hotkey.config(text="ASSIGN NEW OVERLAY HOTKEY: '"+ settings['hotkey'] +"'")
 
 def ask_coordinates():
     new_x = simpledialog.askinteger("Input", "Enter Coordinates X:", parent=root)
@@ -157,7 +157,7 @@ def ask_coordinates():
         settings['coordinates_y'] = new_y
         save_config('coordinates_x', new_x)
         save_config('coordinates_y', new_y)
-        button_coordinates.config(text=f"Set Coordinates X: {settings['coordinates_x']} Y: {settings['coordinates_y']}")
+        button_coordinates.config(text=f"ASSIGN NEW COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}")
 
 
 # Create frames
@@ -165,7 +165,7 @@ frame1 = tk.Frame(root, bg='black')
 frame2 = tk.Frame(root, bg='black')
 
 # Create buttons
-button_hotkey = tk.Button(frame1, text=" ASSIGN NEW OVERLAY HOTKEY:  '"+ settings['hotkey'] +"'", command=ask_hotkey, bg='gray', fg='white')
+button_hotkey = tk.Button(frame1, text="ASSIGN NEW OVERLAY HOTKEY: '"+ settings['hotkey'] +"'", command=ask_hotkey, bg='gray', fg='white')
 button_coordinates = tk.Button(frame1, text=f"ASSIGN NEW COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}", command=ask_coordinates, bg='gray', fg='white')
 button_github = tk.Button(frame2, text="GITHUB", command=open_github, bg='gray', fg='white')
 button_discord = tk.Button(frame2, text="DISCORD", command=open_discord, bg='gray', fg='white')
