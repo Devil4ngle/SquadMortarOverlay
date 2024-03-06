@@ -1,3 +1,11 @@
-Optional Improvements:
-  • Tab -> Right site of screen -> Map Icon Scale 0.3
-  • Tab -> Right site of screen -> Grid Opacity 0"
+ Optional Improvements for Map Overlay:
+   - Tab -> Right site of screen -> Map Icon Scale 0.3
+   - Tab -> Right site of screen -> Grid Opacity 0
+
+ When this application is started, 
+ http://localhost:8000/ (squadmortar.xyz) needs to be
+ refreshed if already open.
+
+ When assigning new coordinates, the location will be updated upon 
+ restarting the application or adding new mortar points 
+ on http://localhost:8000/ (squadmortar.xyz).
