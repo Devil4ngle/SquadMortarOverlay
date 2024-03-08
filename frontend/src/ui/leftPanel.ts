@@ -44,7 +44,7 @@ export const mapOptions = [
   ['tallil', 'Tallil Outskirts', 'options/tallil_option.png'],
   ['yehorivka', 'Yehorivka', 'options/yehorivka_option.png'],
   ['yehorivka_skirmish_v1', 'Yehorivka (Sk_v1)', 'options/yehorivka_option.png'],
-  ['sanxianislands', 'SanxianIslands', 'options/sanxianislands_option.png']
+  ['sanxianislands', 'Sanxian Islands', 'options/sanxianislands_option.png']
 ]
 const weaponOptions = [
   ['standardMortar', 'Standard mortar', 'options/mortarRound10.png'],
