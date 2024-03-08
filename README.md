@@ -2,6 +2,8 @@
 
 <a href="https://github.com/Devil4ngle/squadmortar/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="LICENSE"></a>
 
+[![Watch the video](https://img.youtube.com/vi/oNyl6JDc5Es/hqdefault.jpg)](https://www.youtube.com/watch?v=oNyl6JDc5Es)
+
 ## Requirements
 - Windows operating system
 
