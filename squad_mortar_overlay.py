@@ -1,6 +1,5 @@
 import asyncio
 import http.server
-import socketserver
 import os
 import time
 import tkinter as tk
@@ -12,11 +11,11 @@ from websockets.server import serve
 from tkinter import simpledialog
 import shutil
 import json
-import functools
 from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
 import subprocess
+import functools
 
 DEFAULT_CONFIG = {"hotkey": "k", "coordinates_x": 30, "coordinates_y": 0}
 CONFIG_FILE_PATH = "config/config.json"
@@ -126,7 +125,6 @@ def start_loop_coordinates():
     asyncio.set_event_loop(loop)
     loop.run_until_complete(start_coordinate_server())
 
-
 websocket_thread_map = threading.Thread(target=start_loop_map)
 websocket_thread_map.daemon = True
 websocket_thread_map.start()
@@ -135,26 +133,37 @@ websocket_thread_coordinates = threading.Thread(target=start_loop_coordinates)
 websocket_thread_coordinates.daemon = True
 websocket_thread_coordinates.start()
 
-
 # Server Part
-Handler = http.server.SimpleHTTPRequestHandler
-Handler = functools.partial(
-    http.server.SimpleHTTPRequestHandler, directory="frontend/public/"
-)
+class SilentHandler(http.server.SimpleHTTPRequestHandler):
+    def log_message(self, format, *args, **kwargs):
+        pass
+    
+class MyHttpServerThread(threading.Thread):
+    
+    def __init__(self, address=("0.0.0.0",8000), target_dir="."):
+        super().__init__()
+        self.address = address
+        self.target_dir = "."
+        self.server = http.server.HTTPServer(address, functools.partial(SilentHandler, directory=self.target_dir))
+        self.start()
+ 
+    def run(self):
+        self.server.serve_forever(poll_interval=1)
 
-# Define the socket server
-httpd = socketserver.TCPServer(("", 8000), Handler)
+    def stop(self):
+        self.server.shutdown() 
 
-# Start the server in a new thread
-server_thread = threading.Thread(target=httpd.serve_forever)
-server_thread.daemon = True
-server_thread.start()
+http_server = MyHttpServerThread()
 
-with open("VERSION.txt", "r") as local_file:
-    local_content = local_file.read().strip()
+
 # GUI Part
 root = tk.Tk()
 root.geometry("560x300")
+
+# Version
+with open("VERSION.txt", "r") as local_file:
+    local_content = local_file.read().strip()
+
 root.title("Squad Mortar Overlay " + local_content)
 
 # Set an icon (replace 'icon.ico' with your icon file)
@@ -182,7 +191,7 @@ def open_discord():
 
 
 def open_html():
-    webbrowser.open("http://localhost:8000/")
+    webbrowser.open("http://localhost:8000/frontend/public/")
 
 
 def ask_hotkey():
@@ -228,6 +237,7 @@ def check_version():
             subprocess.Popen("start cmd /K update.bat", shell=True)
 
             # Close the Python program
+            http_server.stop()
             root.destroy()
 
     except Exception as e:
@@ -282,6 +292,7 @@ frame2.pack(fill=tk.X)
 # Define a protocol to close the server and thread when the window is closed
 def on_closing():
     root.destroy()  # Destroy the window
+    http_server.stop()
 
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
