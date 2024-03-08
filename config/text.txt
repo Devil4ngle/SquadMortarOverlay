@@ -9,3 +9,6 @@
  When assigning new coordinates, the location will be updated upon 
  restarting the application or adding new mortar points 
  on http://localhost:8000/ (squadmortar.xyz).
+
+ When pressing the overlay hotkey the Minimap in Squad must be 
+ open and fully zoomed out.
