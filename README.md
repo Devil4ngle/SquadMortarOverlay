@@ -34,7 +34,7 @@ Note: Don't move `squadMortarOverlay.exe` from it's original folder.
 ## Unsupported Screen Size
 If your screen size is not supported, please join our Discord community for assistance: [SquadAutoMortars Discord](https://discord.gg/Qc5y4satdz).
 
-# Join Our Discord Community!
+## Join Our Discord Community!
 
 For additional assistance and to connect with a community, visit [discord server](https://discord.gg/Qc5y4satdz)
 
