@@ -34,5 +34,11 @@ Note: Don't move `squadMortarOverlay.exe` from it's original folder.
 ## Unsupported Screen Size
 If your screen size is not supported, please join our Discord community for assistance: [SquadAutoMortars Discord](https://discord.gg/Qc5y4satdz).
 
+# Join Our Discord Community!
+
+For additional assistance and to connect with a community, visit [discord server](https://discord.gg/Qc5y4satdz)
+
 ## Ban Disclaimer
 No, it will not get you banned it only takes screenshot of Squad minimap. It does not interact with Squad in any way.
+
+Buy Me a [Coffee](https://www.buymeacoffee.com/devil4ngle) :coffee: 
