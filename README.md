@@ -21,7 +21,7 @@
 To download and install SquadAutoMortars:
 1. Go to [https://github.com/Devil4ngle/squadmortar-release/archive/refs/heads/main.zip](https://github.com/Devil4ngle/squadmortar-release/archive/refs/heads/main.zip).
 2. Download the zip.
-Note: The release is approximately 300 MB due to included maps.
+Note: The release is approximately 450 MB due to included maps.
 1. Unzip the downloaded file.
 2. Inside the folder, run `squadMortarOverlay.exe`.
 
