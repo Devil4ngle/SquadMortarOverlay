@@ -41,4 +41,6 @@ For additional assistance and to connect with a community, visit [discord server
 ## Ban Disclaimer
 No, it will not get you banned it only takes screenshot of Squad minimap. It does not interact with Squad in any way.
 
+---
+
 Buy Me a [Coffee](https://www.buymeacoffee.com/devil4ngle) :coffee: 
