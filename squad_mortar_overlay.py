@@ -167,7 +167,7 @@ with open("VERSION.txt", "r") as local_file:
 root.title("Squad Mortar Overlay " + local_content)
 
 # Set an icon (replace 'icon.ico' with your icon file)
-root.iconbitmap("icon.ico")
+root.iconbitmap("frontend/public/icon.ico")
 
 # Disable window resizing
 root.resizable(width=False, height=False)

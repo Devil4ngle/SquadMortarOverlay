@@ -7,7 +7,7 @@ cd frontend
 call npm run buildOnce 
 cd ..
 
-python -m PyInstaller --onefile --noconsole --name squadMortarOverlay squad_mortar_overlay.py
+python -m PyInstaller --onefile --noconsole --icon=frontend/public/icon.ico --name squadMortarOverlay squad_mortar_overlay.py 
 
 if exist release rmdir /s /q release
 
