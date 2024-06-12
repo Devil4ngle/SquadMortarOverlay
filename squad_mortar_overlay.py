@@ -83,9 +83,10 @@ async def handle_coordinates(websocket):
         coordinate_window.wm_attributes("-topmost", True)
         coordinate_window.wm_attributes("-disabled", True)
         coordinate_window.wm_attributes("-transparentcolor", "white")
+        coordinate_window.wm_attributes("-toolwindow", True)
         coordinate_window.withdraw()
         # Create a label to display coordinates
-        label = tk.Label(coordinate_window, font=("Arial Black", "20"))
+        label = tk.Label(coordinate_window, font=("Arial Black", "19"))
         label.pack()
 
         while True:
