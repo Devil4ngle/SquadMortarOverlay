@@ -100,14 +100,14 @@ function checkCoordinates (): void {
         ).highArc
         const angle = solution.dir.toFixed(1)
         const rangeV = solution.angle * US_MIL
-        const range = `${rangeV.toFixed(1)}`
-        dataToSave = `${range}, ${angle}°`
+        const range = `${rangeV.toFixed(0)}`
+        dataToSave = `${range} | ${angle}°`
       } else if (stateSync.userSettings.weaponType === 'ub32') {
         const solution = getS5FiringSolution(weaponTranslation, targetTranslation)
         const angle = solution.dir.toFixed(1)
         const degrees = solution.angle * 180 / Math.PI
-        const mil = degrees.toFixed(1)
-        dataToSave = `${mil}, ${angle}°`
+        const mil = degrees.toFixed(0)
+        dataToSave = `${mil} | ${angle}°`
       } else if (stateSync.userSettings.weaponType === 'hellCannon') {
         const { highArc, lowArc } = getHellCannonFiringSolution(weaponTranslation, targetTranslation)
         const angleValue = highArc.angle / Math.PI * 180
