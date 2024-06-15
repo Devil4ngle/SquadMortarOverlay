@@ -14,12 +14,11 @@ import json
 from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
-import subprocess
 import functools
 
-DEFAULT_CONFIG = {"hotkey": "k", "coordinates_x": 30, "coordinates_y": 0}
+DEFAULT_CONFIG = {"hotkey": "!", "coordinates_x": 700, "coordinates_y": 5, "font_size": 17}
 CONFIG_FILE_PATH = "config/config.json"
-DIR_PATH_MERGE = "frontend/public/merged"
+DIR_PATH_MERGE = "frontend/dist/merged"
 
 
 # Save config
@@ -47,6 +46,7 @@ settings = {
     "hotkey": read_config("hotkey"),
     "coordinates_x": read_config("coordinates_x"),
     "coordinates_y": read_config("coordinates_y"),
+    "font_size": read_config("font_size"),
 }
 
 
@@ -65,7 +65,7 @@ async def handle_map(websocket):
             response = await websocket.recv()
             filename = "merged/merged_{}.png".format(int(time.time()))
             filename = overlay_images(response, filename)
-            print(filename)
+            # print(filename)
             await websocket.send(filename)
             await asyncio.sleep(0.5)
         await asyncio.sleep(0.1)
@@ -86,7 +86,7 @@ async def handle_coordinates(websocket):
         coordinate_window.wm_attributes("-toolwindow", True)
         coordinate_window.withdraw()
         # Create a label to display coordinates
-        label = tk.Label(coordinate_window, font=("Arial Black", "19"))
+        label = tk.Label(coordinate_window, font=("Arial Black", settings['font_size']))
         label.pack()
 
         while True:
@@ -96,6 +96,7 @@ async def handle_coordinates(websocket):
                 coordinate_window.withdraw()  # Hide the window
             else:
                 label.config(text=response)  # Update label text
+                label.config(font=("Arial Black", settings['font_size']))
                 coordinate_window.geometry(
                     f"+{settings['coordinates_x']}+{settings['coordinates_y']}"
                 )
@@ -168,7 +169,7 @@ with open("VERSION.txt", "r") as local_file:
 root.title("Squad Mortar Overlay " + local_content)
 
 # Set an icon (replace 'icon.ico' with your icon file)
-root.iconbitmap("frontend/public/icon.ico")
+root.iconbitmap("config/icon.ico")
 
 # Disable window resizing
 root.resizable(width=False, height=False)
@@ -192,8 +193,14 @@ def open_discord():
 
 
 def open_html():
-    webbrowser.open("http://localhost:8000/frontend/public/")
+    webbrowser.open("http://localhost:8000/frontend/dist")
 
+def ask_font_size():
+    font_size = simpledialog.askinteger("Input", "Enter the Font Size:", parent=root)
+    if font_size:
+        settings["font_size"] = font_size
+        save_config("font_size", font_size)
+    button_font_size.config(text="ASSIGN FONT SIZE: '" + str(settings["font_size"]) + "'")
 
 def ask_hotkey():
     new_hotkey = simpledialog.askstring("Input", "Enter the hotkey:", parent=root)
@@ -224,7 +231,7 @@ def check_version():
         # Fetch content of remote VERSION.txt file
         remote_content = requests.get(remote_url).text.strip()
 
-        print(remote_content)
+        # print(remote_content)
         # Read content of local VERSION.txt file
         with open("VERSION.txt", "r") as local_file:
             local_content = local_file.read().strip()
@@ -233,14 +240,8 @@ def check_version():
         if remote_content == local_content:
             messagebox.showinfo("Up to Date", "The application is up to date.")
         else:
-            # Run external update script
-            os.chdir("scripts/")
-            subprocess.Popen("start cmd /K update.bat", shell=True)
-
-            # Close the Python program
-            http_server.stop()
-            root.destroy()
-
+            messagebox.showinfo("Update available", "Download the latest version.")
+            webbrowser.open("https://github.com/Devil4ngle/squadmortar-release/archive/refs/heads/main.zip")
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
@@ -252,8 +253,15 @@ frame2 = tk.Frame(root, bg="black")
 # Create buttons
 button_hotkey = tk.Button(
     frame1,
-    text="ASSIGN NEW OVERLAY HOTKEY: '" + settings["hotkey"] + "'",
+    text="ASSIGN NEW HOTKEY: '" + settings["hotkey"] + "'",
     command=ask_hotkey,
+    bg="gray",
+    fg="white",
+)
+button_font_size = tk.Button(
+    frame1,
+    text="ASSIGN NEW FONT SIZE: '" + str(settings["font_size"]) + "'",
+    command=ask_font_size,
     bg="gray",
     fg="white",
 )
@@ -271,7 +279,7 @@ button_discord = tk.Button(
     frame2, text="DISCORD", command=open_discord, bg="gray", fg="white"
 )
 button_html = tk.Button(
-    frame2, text="OPEN Squadmortar.xyz", command=open_html, bg="gray", fg="white"
+    frame2, text="OPEN SquadCalc", command=open_html, bg="gray", fg="white"
 )
 button_update = tk.Button(
     frame2, text="UPDATE", command=check_version, bg="gray", fg="white"
@@ -280,7 +288,8 @@ button_update = tk.Button(
 
 # Place buttons in the frames
 button_hotkey.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 0))
-button_coordinates.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 0))
+button_font_size.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 0))
+button_coordinates.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 0))
 button_github.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 5))
 button_discord.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
 button_html.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
