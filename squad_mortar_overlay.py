@@ -1,7 +1,5 @@
 import asyncio
-import http.server
 import os
-import time
 import tkinter as tk
 import webbrowser
 import threading
@@ -9,17 +7,13 @@ import keyboard
 import websockets
 from websockets.server import serve
 from tkinter import simpledialog
-import shutil
 import json
 from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
-import functools
 
 DEFAULT_CONFIG = {"hotkey": "!", "coordinates_x": 700, "coordinates_y": 5, "font_size": 17}
 CONFIG_FILE_PATH = "config/config.json"
-DIR_PATH_MERGE = "frontend/dist/merged"
-
 
 # Save config
 if not os.path.exists(CONFIG_FILE_PATH):
@@ -50,23 +44,15 @@ settings = {
 }
 
 
-# Clean Merged folder
-if os.path.exists(DIR_PATH_MERGE):
-    shutil.rmtree(DIR_PATH_MERGE)
-os.makedirs(DIR_PATH_MERGE)
-
-
 # WebSocket Part
 async def handle_map(websocket):
     await websocket.send("Open")
     while True:
         if keyboard.is_pressed(settings["hotkey"]):
             await websocket.send("Map")
-            response = await websocket.recv()
-            filename = "merged/merged_{}.png".format(int(time.time()))
-            filename = overlay_images(response, filename)
-            # print(filename)
-            await websocket.send(filename)
+            image_data = await websocket.recv()
+            modified_image_data = overlay_images(image_data)
+            await websocket.send(modified_image_data)
             await asyncio.sleep(0.5)
         await asyncio.sleep(0.1)
 
@@ -112,7 +98,7 @@ async def start_coordinate_server():
 
 
 async def start_map_server():
-    async with serve(handle_map, "localhost", 12345):
+    async with serve(handle_map, "localhost", 12345, max_size=10 * 1024 * 1024):
         await asyncio.Future()  # run forever
 
 
@@ -134,29 +120,6 @@ websocket_thread_map.start()
 websocket_thread_coordinates = threading.Thread(target=start_loop_coordinates)
 websocket_thread_coordinates.daemon = True
 websocket_thread_coordinates.start()
-
-# Server Part
-class SilentHandler(http.server.SimpleHTTPRequestHandler):
-    def log_message(self, format, *args, **kwargs):
-        pass
-    
-class MyHttpServerThread(threading.Thread):
-    
-    def __init__(self, address=("0.0.0.0",8000), target_dir="."):
-        super().__init__()
-        self.address = address
-        self.target_dir = "."
-        self.server = http.server.HTTPServer(address, functools.partial(SilentHandler, directory=self.target_dir))
-        self.start()
- 
-    def run(self):
-        self.server.serve_forever(poll_interval=1)
-
-    def stop(self):
-        self.server.shutdown() 
-
-http_server = MyHttpServerThread()
-
 
 # GUI Part
 root = tk.Tk()
@@ -193,7 +156,7 @@ def open_discord():
 
 
 def open_html():
-    webbrowser.open("http://localhost:8000/frontend/dist")
+    webbrowser.open("https://devil4ngle.github.io/squadmortar/")
 
 def ask_font_size():
     font_size = simpledialog.askinteger("Input", "Enter the Font Size:", parent=root)
@@ -302,8 +265,6 @@ frame2.pack(fill=tk.X)
 # Define a protocol to close the server and thread when the window is closed
 def on_closing():
     root.destroy()  # Destroy the window
-    http_server.stop()
-
 
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
