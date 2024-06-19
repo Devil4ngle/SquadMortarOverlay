@@ -19,6 +19,7 @@ def capture_screenshot():
     coordinates = {
         "2560x1440": {"mapCoordinates": [1001, 136, 2278, 1412]},
         "1920x1080": {"mapCoordinates": [751, 102, 1708, 1059]},
+        "1920x1200": {"mapCoordinates": [751, 102, 1708, 1059]},
     }
     # Use coordinates based on the game resolution
     current_resolution = f"{game_resolution[0]}x{game_resolution[1]}"
@@ -31,25 +32,10 @@ def capture_screenshot():
     return cropped_image
 
 
-def overlay_images(image_path, output_path):
-    image_path_public = "frontend/dist/" + image_path
-    output_path_public = "frontend/dist/" + output_path
+def overlay_images(image_data):
     img1 = capture_screenshot()
-
-    if img1 is False:
-        return image_path
-    # read images
-    img2 = cv2.imread(image_path_public)
-
-    # resize images
-    img1 = cv2.resize(
-        img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_LINEAR
-    )
-
-    # blend images
+    img2 = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
+    img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_LINEAR)
     img_out = cv2.addWeighted(img1, 0.6, img2, 0.45, 0)
-
-    # save the output
-    cv2.imwrite(output_path_public, img_out)
-    # print(output_path_public)
-    return output_path
+    _, img_encoded = cv2.imencode('.png', img_out)
+    return img_encoded.tobytes()
