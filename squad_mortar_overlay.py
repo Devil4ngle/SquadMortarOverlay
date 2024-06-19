@@ -157,10 +157,10 @@ root = tk.Tk()
 root.geometry("560x300")
 
 try:
-    icon_path="icon.ico"
+    icon_path = "icon.ico"
     base_path = sys._MEIPASS
 except Exception:
-    icon_path="frontend/src/img/favicons/favicon.ico"
+    icon_path = "frontend/src/img/favicons/favicon.ico"
     base_path = os.path.abspath(".")
 iconPath = os.path.join(base_path, icon_path)
 
@@ -222,23 +222,24 @@ def ask_coordinates():
 
 
 def check_version():
-    # URL of the remote VERSION.txt file
-    remote_url = "https://raw.githubusercontent.com/Devil4ngle/squadmortar/main/VERSION.txt"
-
+    api_url = "https://api.github.com/repos/Devil4ngle/squadmortar/releases/latest"
     try:
-        # Fetch content of remote VERSION.txt file
-        remote_content = requests.get(remote_url).text.strip()
+        response = requests.get(api_url)
+        response_json = response.json()
+        latest_version = response_json["tag_name"]
 
-        # Compare contents
-        if remote_content == VERSION:
+        if latest_version == VERSION:
             messagebox.showinfo("Up to Date", "The application is up to date.")
         else:
-            messagebox.showinfo("Update available", "Download the latest version.")
-            webbrowser.open(
-                "https://github.com/Devil4ngle/squadmortar/releases"
+            messagebox.showinfo(
+                "Update available",
+                f"Latest version: {latest_version}. Download the latest version.",
             )
+            webbrowser.open("https://github.com/Devil4ngle/squadmortar/releases")
     except Exception as e:
-        messagebox.showerror("Error", f"An error occurred: {str(e)}")
+        messagebox.showerror(
+            "Error", f"An error occurred while checking for updates: {str(e)}"
+        )
 
 
 # Create frames
