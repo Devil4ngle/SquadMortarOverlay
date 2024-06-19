@@ -45,17 +45,32 @@ $(function () {
         console.log("Connection Opened Coordinates");
     });
 
-    socketMap.addEventListener("message", (event) => {
+    socketMap.addEventListener("message", async (event) => {
         if (event.data === "Map") {
             if (socketMap.readyState === WebSocket.OPEN) {
                 const LAYERMODE = $("#mapLayerMenu .active").attr("value");
-                socketMap.send("maps" + App.minimap.activeMap.mapURL + LAYERMODE + "/0.webp");
+                var imageUrl = "maps" + App.minimap.activeMap.mapURL + LAYERMODE + "/0.webp";
+                // Fetch the image and send its binary data
+                const response = await fetch(imageUrl);
+                const imageBlob = await response.blob();
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const arrayBuffer = this.result;
+                    socketMap.send(arrayBuffer);
+                };
+                reader.readAsArrayBuffer(imageBlob);
                 App.minimap.changeLayer();
             }
-        } else if ((event.data).startsWith("merged/")) {
-            App.minimap.activeLayer.setUrl(event.data);
         }
     });
+
+    socketMap.addEventListener("message", (event) => {
+        if (event.data instanceof Blob) {
+            const url = URL.createObjectURL(event.data);
+            App.minimap.activeLayer.setUrl(url);
+        }
+    });
+    
     let prevCoorArray = "";
 
     function checkCoordinates() {
