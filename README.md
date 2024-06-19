@@ -31,8 +31,9 @@ If your screen size is not supported, please join Discord so I will add it: [Squ
 - GitHub: [SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc)
 - Special thanks to sh4rkman
 
-## Ban Disclaimer
-No, it will not get you banned it only takes a screenshot of the Screen. It does not interact with Squad in any way.
+## Will this program get me banned?
+No, it will not get you banned. It only takes a screenshot of the screen and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
+
 
 ---
 
