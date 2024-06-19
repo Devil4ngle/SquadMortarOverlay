@@ -34,33 +34,7 @@ echo WebPage updated successfully.
 
 cd .. 
 
-python -m PyInstaller --onefile --noconsole --icon=config/icon.ico --name squadMortarOverlay squad_mortar_overlay.py 
-
-if exist release rmdir /s /q release
-
-:: Create the 'release' folder
-mkdir release
-
-git clone --depth=1 --no-checkout https://github.com/Devil4ngle/squadmortar-release.git release
-
-:: Copy squadmortar.exe to the 'release' folder
-copy VERSION.txt release
-
-mkdir release\config
-
-:: Copy only the specified files to the 'release' folder
-copy /y config\text.txt release\config
-copy /y config\icon.ico release\config
-
-:: Initialize a new Git repository in the 'release' folder
-cd release
-:: Add all your changes
-
-git add .
-
-git commit -m "Update Release"
-
-git push
+python -m PyInstaller  --add-data=icon.ico;. --clean --add-data=icon.ico;. --onefile --noconsole --icon=frontend/src/img/favicons/favicon.ico --name squadMortarOverlay squad_mortar_overlay.py 
 
 echo Task completed successfully.
 

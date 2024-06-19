@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import pyautogui
 
+
 def capture_screenshot():
     screen_width, screen_height = pyautogui.size()
 
@@ -35,7 +36,9 @@ def capture_screenshot():
 def overlay_images(image_data):
     img1 = capture_screenshot()
     img2 = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
-    img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_LINEAR)
+    img1 = cv2.resize(
+        img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_LINEAR
+    )
     img_out = cv2.addWeighted(img1, 0.6, img2, 0.45, 0)
-    _, img_encoded = cv2.imencode('.png', img_out)
+    _, img_encoded = cv2.imencode(".png", img_out)
     return img_encoded.tobytes()
