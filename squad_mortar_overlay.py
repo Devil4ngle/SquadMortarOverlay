@@ -1,12 +1,10 @@
 import asyncio
-import base64
 import os
 import sys
 import tkinter as tk
 import webbrowser
 import threading
 import keyboard
-import urllib.request
 import websockets
 from websockets.server import serve
 from tkinter import simpledialog
@@ -31,12 +29,12 @@ TEXT_CONTENT = """Optional Improvements for Map Overlay:
     - Tab -> Right site of screen -> Grid Opacity 0
 
  When this application is started, 
- http://localhost:8000/ (SquadCalc) needs to be
+ https://devil4ngle.github.io/squadmortar/ (SquadCalc) needs to be
  refreshed if already open.
 
  When assigning new coordinates, the location will be updated upon 
  restarting the application or adding new mortar points 
- on http://localhost:8000/ (SquadCalc).
+ on https://devil4ngle.github.io/squadmortar/ (SquadCalc).
 
  When pressing the overlay hotkey the Minimap in Squad must be 
  open (the capslock one) and fully zoomed out with side bar opened."""
