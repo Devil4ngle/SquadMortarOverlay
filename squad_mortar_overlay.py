@@ -157,10 +157,12 @@ root = tk.Tk()
 root.geometry("560x300")
 
 try:
+    icon_path="icon.ico"
     base_path = sys._MEIPASS
 except Exception:
+    icon_path="frontend/src/img/favicons/favicon.ico"
     base_path = os.path.abspath(".")
-iconPath = os.path.join(base_path, "icon.ico")
+iconPath = os.path.join(base_path, icon_path)
 
 root.iconbitmap(iconPath)
 
