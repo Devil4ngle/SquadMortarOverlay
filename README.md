@@ -31,7 +31,7 @@ If your screen size is not supported, please join Discord so I will add it:
 The website is derived from the GitHub repository 
 [SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc), and the original website can be found at [SquadCalc](https://squadcalc.app/). 
 
-Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the invaluable help throughout the development of this project.
+Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the invaluable help with SquadCalc throughout the development of this project.
 
 ## Will this program get me banned?
 No, it will not get you banned. It only takes a screenshot of the screen and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
