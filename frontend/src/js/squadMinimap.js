@@ -93,7 +93,6 @@ export var squadMinimap = Map.extend({
         this.grid = new squadGrid(this);
         this.grid.setBounds(new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]));
         if (App.userSettings.grid) this.showGrid(); else this.hideGrid();
-        this.setZoom(4);
     },
 
 

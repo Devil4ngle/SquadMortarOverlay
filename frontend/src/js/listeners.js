@@ -9,6 +9,7 @@ $(document).on("change", ".dropbtn", function() {
     App.minimap.clear(); 
     App.minimap.draw(true); 
     App.minimap.changeLayer();
+    App.minimap.setZoom(4);
 });
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
