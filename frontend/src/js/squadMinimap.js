@@ -1,4 +1,4 @@
-import { ImageOverlay, Map, CRS, svg, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
+import { ImageOverlay, Map, CRS, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
