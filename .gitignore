@@ -28,3 +28,4 @@ squadMortarOverlay.exe
 squadMortarOverlay.spec
 build
 __pycache__
+tests/result_images/
