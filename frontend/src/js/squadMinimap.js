@@ -1,4 +1,4 @@
-import { ImageOverlay, Map, CRS, svg, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
+import { ImageOverlay, Map, CRS, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
@@ -24,21 +24,21 @@ export var squadMinimap = Map.extend({
 
         options = {
             attributionControl: false,
-            boxZoom: true,
             center: [-tilesSize / 2, tilesSize / 2],
             closePopupOnClick: false,
             crs: CRS.Simple,
             doubleClickZoom: false,
-            edgeBufferTiles: 5,
             fadeAnimation: false,
-            renderer: svg({ padding: 3 }),
-            wheelPxPerZoomLevel: 75,
-            zoom: 2,
+            markerZoomAnimation: false,
             zoomAnimation: false,
+            zoom: 4,
             zoomControl: false,
             scrollWheelZoom: false,
             smoothWheelZoom: true,  
-            smoothSensitivity: 1.6,   
+            smoothSensitivity: 1.4,   
+            zoomSnap: 0,
+            zoomDelta: 0,
+            maxZoom:10
         };
 
         Util.setOptions(this, options);

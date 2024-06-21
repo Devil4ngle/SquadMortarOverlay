@@ -49,7 +49,7 @@ $(function () {
         if (event.data === "Map") {
             if (socketMap.readyState === WebSocket.OPEN) {
                 const LAYERMODE = $("#mapLayerMenu .active").attr("value");
-                var imageUrl = "maps" + App.minimap.activeMap.mapURL + LAYERMODE + "/0.webp";
+                let imageUrl = "maps" + App.minimap.activeMap.mapURL + LAYERMODE + "/0.webp";
                 // Fetch the image and send its binary data
                 const response = await fetch(imageUrl);
                 const imageBlob = await response.blob();

@@ -1,18 +1,5 @@
 
 /* global L */
-L.Map.mergeOptions({
-    // @section Mousewheel options
-    // @option smoothWheelZoom: Boolean|String = true
-    // Whether the map can be zoomed by using the mouse wheel. If passed `'center'`,
-    // it will zoom to the center of the view regardless of where the mouse was.
-    smoothWheelZoom: true,
-
-    // @option smoothWheelZoom: number = 1
-    // setting zoom speed
-    smoothSensitivity: 1
-
-});
-
 
 L.Map.smoothWheelZoom = L.Handler.extend({
 
@@ -37,7 +24,7 @@ L.Map.smoothWheelZoom = L.Handler.extend({
         this._wheelMousePosition = map.mouseEventToContainerPoint(e);
         this._centerPoint = map.getSize()._divideBy(2);
         this._startLatLng = map.containerPointToLatLng(this._centerPoint);
-        this._wheelStartLatLng = map.containerPointToLatLng(this._wheelMousePosition);
+        this._wheelMouseLatLng = map.containerPointToLatLng(this._wheelMousePosition);
         this._startZoom = map.getZoom();
         this._moved = false;
         this._zooming = true;
@@ -60,7 +47,7 @@ L.Map.smoothWheelZoom = L.Handler.extend({
             this._goalZoom = map._limitZoom(this._goalZoom);
         }
         this._wheelMousePosition = this._map.mouseEventToContainerPoint(e);
-
+        this._wheelMouseLatLng = map.containerPointToLatLng(this._wheelMousePosition);
         clearTimeout(this._timeoutId);
         this._timeoutId = setTimeout(this._onWheelEnd.bind(this), 200);
 
@@ -90,8 +77,7 @@ L.Map.smoothWheelZoom = L.Handler.extend({
         if (map.options.smoothWheelZoom === "center") {
             this._center = this._startLatLng;
         } else {
-            this._center = map.unproject(map.project(this._wheelStartLatLng, this._zoom).subtract(delta), this._zoom);
-        }
+            this._center = map.unproject(map.project(this._wheelMouseLatLng, this._zoom).subtract(delta), this._zoom);        }
 
         if (!this._moved) {
             map._moveStart(true, false);

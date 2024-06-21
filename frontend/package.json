@@ -20,7 +20,7 @@
   },
   "private": false,
   "jshintConfig": {
-    "esversion": 7
+    "esversion": 8
   },
   "scripts": {
     "start": "webpack serve --open --config ./config/webpack.test.js",
