@@ -13,7 +13,7 @@ from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
 
-VERSION = "2.1.0"
+VERSION = "2.1.1"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
@@ -24,20 +24,20 @@ DEFAULT_CONFIG = {
 
 CONFIG_FILE_PATH = "config/config.json"
 
-TEXT_CONTENT = """Optional Improvements for Map Overlay:
-    - Tab -> Right site of screen -> Map Icon Scale 0.3
-    - Tab -> Right site of screen -> Grid Opacity 0
+TEXT_CONTENT = """ Optional Improvements for Map Overlay:
+ Capslock -> Right-Top site of Screen -> Following options
+    - Grid Opacity 0 or lower then 1
+    - Map Icon Scale between 0.3 - 0.7
 
  When this application is started, 
  https://devil4ngle.github.io/squadmortar/ (SquadCalc) needs to be
  refreshed if already open.
 
  When assigning new coordinates, the location will be updated upon 
- restarting the application or adding new mortar points 
- on https://devil4ngle.github.io/squadmortar/ (SquadCalc).
+ adding new mortar points on (SquadCalc).
 
  When pressing the overlay hotkey the Minimap in Squad must be 
- open (the capslock one) and fully zoomed out with side bar opened."""
+ open (the Capslock one) and fully zoomed out with side bar open."""
 
 # Create config directory if it does not exist
 if not os.path.exists("config"):
@@ -122,12 +122,12 @@ async def handle_coordinates(websocket):
 
 async def start_coordinate_server():
     async with serve(handle_coordinates, "localhost", 12346):
-        await asyncio.Future()  # run forever
+        await asyncio.Future()
 
 
 async def start_map_server():
     async with serve(handle_map, "localhost", 12345, max_size=10 * 1024 * 1024):
-        await asyncio.Future()  # run forever
+        await asyncio.Future()
 
 
 def start_loop_map():

@@ -1,3 +1,4 @@
+import shutil
 import cv2
 import os
 from pathlib import Path
@@ -30,6 +31,10 @@ map_locations = {
 
 # Create the result_images directory if it doesn't exist
 result_images_dir = Path("tests\\result_images")
+
+if result_images_dir.exists():
+    shutil.rmtree(result_images_dir)
+    
 result_images_dir.mkdir(exist_ok=True)
 
 for screenshot_name, map_name in map_locations.items():
@@ -42,23 +47,28 @@ for screenshot_name, map_name in map_locations.items():
         if img2_path.exists():
             img2 = cv2.imread(str(img2_path))
 
-            # Resize img1 to match img2's dimensions
-            img1_resized = cv2.resize(
-                img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_LINEAR
+            img1_resized1 = cv2.resize(
+                img1, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC
             )
 
-            alpha = 0.6 
-            betha = 0.45
-            gamma = 0
-            img_out = cv2.addWeighted(img1_resized, alpha, img2, betha, gamma)
-            output_file_path = result_images_dir / f"{map_name}_{map_type}_{screenshot_name.split('_')[-1]}_{alpha}_{betha}_{gamma}.png"
-            cv2.imwrite(str(output_file_path), img_out)
-
-            alpha = 0.9 
+            alpha = 0.85 
             betha = 0.2
             gamma = 0
-            img_out = cv2.addWeighted(img1_resized, alpha, img2, betha, gamma)
-            output_file_path = result_images_dir / f"{map_name}_{map_type}_{screenshot_name.split('_')[-1]}_{alpha}_{betha}_{gamma}.png"
+            img_out = cv2.addWeighted(img1_resized1, alpha, img2, betha, gamma)
+            output_file_path = result_images_dir / f"{map_name}_{map_type}_{screenshot_name.split('_')[-1]}_1.png"
+            cv2.imwrite(str(output_file_path), img_out)
+            
+            alpha = 0.85 
+            betha = 0.2
+            gamma = 0
+            img2_out = cv2.resize(
+                img_out, (img1.shape[1], img1.shape[0]), interpolation=cv2.INTER_AREA
+            )
+            img_out = cv2.addWeighted(img1, alpha, img2_out, betha, gamma)
+            img_out = cv2.resize(
+                img_out, (img2.shape[1], img2.shape[0]), interpolation=cv2.INTER_CUBIC
+            )
+            output_file_path = result_images_dir / f"{map_name}_{map_type}_{screenshot_name.split('_')[-1]}_2.png"
             cv2.imwrite(str(output_file_path), img_out)
 
             print(f"Saved overlay image to {output_file_path}")
