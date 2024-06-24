@@ -68,7 +68,7 @@ export var squadMinimap = Map.extend({
         if (App.userSettings.keypadUnderCursor) {
             this.on("mousemove", this._handleMouseMove, this);
         }
-        this.changeLayer();
+        this.changeLayer(true);
     },
 
     /**
@@ -81,7 +81,7 @@ export var squadMinimap = Map.extend({
     /**
      * remove existing layer and replace it
      */
-    changeLayer: function () {
+    changeLayer: function (init=false) {
         const LAYERMODE = $("#mapLayerMenu .active").attr("value");
         if (this.activeLayer) this.activeLayer.remove();
         this.activeLayer = new ImageOverlay("", this.imageBounds);
@@ -90,8 +90,10 @@ export var squadMinimap = Map.extend({
         this.heightmap = new squadHeightmap(this.imageBounds, this);
         this.gameToMapScale = this.tilesSize / this.activeMap.size;
         this.mapToGameScale = this.activeMap.size / this.tilesSize;
-        this.grid = new squadGrid(this);
-        this.grid.setBounds(new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]));
+        if (init){
+            this.grid = new squadGrid(this);
+            this.grid.setBounds(new LatLngBounds([0, 0], [-this.tilesSize, this.tilesSize]));
+        }
         if (App.userSettings.grid) this.showGrid(); else this.hideGrid();
     },
 
