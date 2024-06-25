@@ -247,6 +247,8 @@ export function loadMapSelector() {
 
 export function loadMinimap(){
     var tileSize = 256;
-    var defaultMap = MAPS[11]; // Kohat
+    var randMapId = Math.floor(Math.random() * MAPS.length);
+    var defaultMap = MAPS[randMapId];
+    $(".dropbtn").val(randMapId);
     App.minimap = new squadMinimap("map", tileSize, defaultMap);
 }
