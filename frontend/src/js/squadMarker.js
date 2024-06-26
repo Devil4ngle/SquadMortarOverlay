@@ -1,6 +1,7 @@
+/* global L */
+
 import { Marker, Util, Circle, CircleMarker, LatLng, Popup } from "leaflet";
 import { ellipse } from "./ellipse";
-
 import { App } from "./conf";
 import SquadSimulation from "./squadSimulation";
 import { isTouchDevice } from "./utils";
@@ -111,12 +112,12 @@ export var squadWeaponMarker = squadMarker.extend({
 
         // Create the min/max range markers
         this.minRangeMarker = new Circle(latlng, this.minDistCircleOn).addTo(this.map.markersGroup);
-        this.rangeMarker = new Circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
+        //this.rangeMarker = new Circle(latlng, this.maxDistCircleOn).addTo(this.map.markersGroup);
         this.miniCircle = new CircleMarker(latlng, this.miniCircleOptions).addTo(this.map.markersGroup);
         
         if (!App.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
-            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
+            //this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
         // Hide minRangeMarker if weapon doesn't have minimum range
         if (this.minRangeMarker.getRadius() == 0) {
@@ -130,6 +131,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.on("dragEnd", this._handleDragEnd, this);
         this.on("dblclick", this._handleDblclick, this);
         this.on("contextmenu", this._handleContextMenu, this);
+        this.updateWeaponMaxRange(latlng);
     },
 
     /**
@@ -158,22 +160,92 @@ export var squadWeaponMarker = squadMarker.extend({
         // Update remaining targets if they exists
         this.map.updateTargets();
     },
-
-
+    updateWeaponMaxRange: function (weaponPos = null) {
+        if (this.rangeMarker) {
+            this.rangeMarker.remove();
+        }
+        if (!weaponPos){
+            weaponPos = this.map.activeWeaponsMarkers.getLayers()[0].getLatLng();
+        }
+        let weaponHeight = this.map.heightmap.getHeight(weaponPos);
+        let velocity = App.activeWeapon.velocity;
+        const G = 9.8 * App.activeWeapon.gravityScale;
+        const maxDistance= App.activeWeapon.getMaxDistance();
+        const optimalAngleRadians = 45 * (Math.PI / 180); // Convert 45 degrees to radians
+        let points = [];
+        // Calculate trajectory points in all directions
+        for (let angle = 0; angle < 360; angle += 4) {
+            const directionRadians = angle * (Math.PI / 180); // Convert angle to radians
+    
+            let distance = 0;
+            let hitObstacle = false;
+            // Corrected: Use gameToMapScale for degrees per meter calculation
+            const degreesPerMeter = this.map.gameToMapScale;
+    
+            while (!hitObstacle) {
+                let increment;
+                if (distance < maxDistance * 0.6) {
+                    increment = 40; // Use larger increment when far from maxDistance
+                } else if (distance >= maxDistance * 0.6 && distance < maxDistance - 200) {
+                    increment = 20; // Use medium increment when closer to maxDistance
+                } else {
+                    increment = 5; // Use smallest increment when very close to or beyond maxDistance
+                }
+    
+                distance += increment;  // Increment distance by 20 meters
+    
+                // Determine velocity based on distance if velocity is an array
+                let currentVelocity = velocity;
+                if (Array.isArray(velocity)) {
+                    let velocityEntry = velocity.find((entry, index) => {
+                        return distance <= entry[0] || index === velocity.length - 1;
+                    });
+                    currentVelocity = velocityEntry[1];
+                }
+    
+                // Calculate time of flight for the distance
+                const time = distance / (currentVelocity * Math.cos(optimalAngleRadians));
+            
+                // Corrected: Use distance in meters directly with gameToMapScale for accurate position calculation
+                const deltaLat = distance * Math.cos(directionRadians) * degreesPerMeter;
+                const deltaLng = distance * Math.sin(directionRadians) * degreesPerMeter;
+        
+                // Calculate the new position
+                const landingX = weaponPos.lat + deltaLat;
+                const landingY = weaponPos.lng + deltaLng;
+    
+                // Calculate landing height using trajectory formula
+                const yVel = currentVelocity * Math.sin(optimalAngleRadians);
+                const currentHeight =
+              weaponHeight + yVel * time - 0.5 * G * time * time;
+                const landingHeight = this.map.heightmap.getHeight({
+                    lat: landingX,
+                    lng: landingY,
+                });
+                if (currentHeight <= landingHeight || distance > maxDistance + 400) {
+                    // If the projectile hits an obstacle or lands
+                    points.push([landingX, landingY]);
+                    hitObstacle = true;
+                }
+            }
+        }
+        this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
+        this.rangeMarker.setStyle(this.maxDistCircleOn);
+    },
     /**
      * update calcs, spread markers
      */
     updateWeapon: function(){
 
-        var radiusMax = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
+        //var radiusMax = App.activeWeapon.getMaxDistance() * this.map.gameToMapScale;
         var radiusMin = App.activeWeapon.minDistance * this.map.gameToMapScale;
         
         this.minRangeMarker.setRadius(radiusMin);
-        this.rangeMarker.setRadius(radiusMax);
+        //this.rangeMarker.setRadius(radiusMax);
 
         if (!App.userSettings.weaponMinMaxRange) {
             this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
-            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
+            //this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         }
         else {
             // Update MinRange circle opacity
@@ -183,8 +255,9 @@ export var squadWeaponMarker = squadMarker.extend({
             else {
                 this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             }
-            this.rangeMarker.setStyle(this.maxDistCircleOn);
+            //this.rangeMarker.setStyle(this.maxDistCircleOn);
         }
+        this.updateWeaponMaxRange();
     },
 
 
@@ -195,7 +268,6 @@ export var squadWeaponMarker = squadMarker.extend({
     _handleDrag: function (e) {
         e = this.keepOnMap(e);
         this.setLatLng(e.latlng);
-        this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
         this.miniCircle.setLatLng(e.latlng);
 
@@ -229,6 +301,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
         this.map.updateTargets();
+        this.updateWeaponMaxRange();
 
     },
 });
