@@ -175,7 +175,7 @@ export var squadWeaponMarker = squadMarker.extend({
         // Calculate trajectory points in all directions
         for (let angle = 0; angle < 360; angle += 4) {
             const directionRadian = degToRad(angle); // Convert angle to radians
-            let distance = 0;
+            let distance = maxDistance - 500;
             let hitObstacle = false;
             // Corrected: Use gameToMapScale for degrees per meter calculation
 
@@ -185,7 +185,7 @@ export var squadWeaponMarker = squadMarker.extend({
                 let increment;
                 if (distance < maxDistance * 0.6) {
                     increment = 40; // Use larger increment when far from maxDistance
-                } else if (distance >= maxDistance * 0.6 && distance < maxDistance - 200) {
+                } else if (distance >= maxDistance * 0.6 && distance <= maxDistance * 0.75) {
                     increment = 20; // Use medium increment when closer to maxDistance
                 } else {
                     increment = 5; // Use smallest increment when very close to or beyond maxDistance
@@ -354,6 +354,9 @@ export var squadWeaponMarker = squadMarker.extend({
             layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
         }); 
         this.miniCircle.setStyle({opacity: 1});
+        if (this.rangeMarker) {
+            this.rangeMarker.remove();
+        }
     },
 
     _handleDragEnd: function () {
