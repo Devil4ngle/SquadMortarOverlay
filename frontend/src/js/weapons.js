@@ -46,6 +46,7 @@ export class Weapon {
                 return this.velocity[i - 1][1] + ((distance - this.velocity[i - 1][0]) / (this.velocity[i][0] - this.velocity[i - 1][0])) * (this.velocity[i][1] - this.velocity[i - 1][1]);
             }
         }
+        return this.velocity[this.velocity.length - 1][1];
     }
 
     /**

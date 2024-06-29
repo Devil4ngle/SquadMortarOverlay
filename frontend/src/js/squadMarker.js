@@ -166,7 +166,6 @@ export var squadWeaponMarker = squadMarker.extend({
         }
         let weaponPos=this.getLatLng();
         let weaponHeight = this.map.heightmap.getHeight(weaponPos);
-        let velocity = App.activeWeapon.velocity;
         const G = 9.8 * App.activeWeapon.gravityScale;
         const maxDistance= App.activeWeapon.getMaxDistance();
         const optimalAngleRadians = 45 * (Math.PI / 180); // Convert 45 degrees to radians
@@ -194,14 +193,7 @@ export var squadWeaponMarker = squadMarker.extend({
                 distance += increment;  // Increment distance by 20 meters
     
                 // Determine velocity based on distance if velocity is an array
-                let currentVelocity = velocity;
-                if (Array.isArray(velocity)) {
-                    let velocityEntry = velocity.find((entry, index) => {
-                        return distance <= entry[0] || index === velocity.length - 1;
-                    });
-                    currentVelocity = velocityEntry[1];
-                }
-    
+                let currentVelocity = App.activeWeapon.getVelocity(distance);
                 // Calculate time of flight for the distance
                 const time = distance / (currentVelocity * Math.cos(optimalAngleRadians));
             
@@ -229,10 +221,15 @@ export var squadWeaponMarker = squadMarker.extend({
             }
         }
         this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
-        this.rangeMarker.setStyle(this.maxDistCircleOn);
+        if (!App.userSettings.weaponMinMaxRange) {
+            //this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
+            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
+        } else {
+            this.rangeMarker.setStyle(this.maxDistCircleOn);
+        }
     },
 
-    calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
+    /*calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
         let points = [];
         for (let shootingAngle = 3; shootingAngle < 44; shootingAngle += 1) {
             const shootingAngleRadians = degToRad(shootingAngle); // Convert angle to radians
@@ -294,7 +291,7 @@ export var squadWeaponMarker = squadMarker.extend({
 
         }
         this.blindSpotMarker = L.polygon(points, {color: "red"}).addTo(this.map.markersGroup);
-    },
+    },*/
 
     /**
      * update calcs, spread markers
@@ -673,7 +670,6 @@ export var squadTargetMarker = squadMarker.extend({
         var dist = getDist(a, b);
         var elevation = getElevation(dist, targetHeight - weaponHeight, App.activeWeapon.getVelocity(dist));
         var velocity = App.activeWeapon.getVelocity(dist);
-
         this.options.results = {
             elevation: elevation,
             bearing: getBearing(a, b),
