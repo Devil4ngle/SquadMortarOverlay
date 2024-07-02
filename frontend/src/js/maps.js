@@ -76,11 +76,11 @@ export const MAPS = [
         maxZoomLevel: 4,
     },
     // { 
-    //     name: "Jensen's", 
+    //     name: "Jensen's Range", 
     //     size: 4008, // OK
     //     offset: [0, 0], 
     //     scaling: 0.0859, // OK
-    //     mapURL: "/jensen/{z}_{x}_{y}.webp",
+    //     mapURL: "/jensen/",
     //     maxZoomLevel: 4,
     // },
     { 
@@ -181,7 +181,7 @@ export const MAPS = [
     },
     { 
         name: "Skorpo", 
-        size: 6869, // OK but owi fuckedup again, X and Y sizes are not the same..
+        size: 6869, // OK
         offset: [0, 0], 
         scaling: 1.0927, 
         mapURL: "/skorpo/",
@@ -241,7 +241,6 @@ export function loadMapSelector() {
         MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
     });
 
-    $(".dropbtn").val(11);
 
 }
 
@@ -251,4 +250,5 @@ export function loadMinimap(){
     var defaultMap = MAPS[randMapId];
     $(".dropbtn").val(randMapId);
     App.minimap = new squadMinimap("map", tileSize, defaultMap);
+    App.minimap.draw();
 }

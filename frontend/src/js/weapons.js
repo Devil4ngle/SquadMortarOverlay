@@ -4,12 +4,13 @@ import { shoot } from "./utils";
 
 import classicLogo from "../img/icons/mortar.png";
 import hellcannonLogo from "../img/icons/hellcannon_white.png";
+import ub322Logo from "../img/icons/ub32_deployable.png";
 import technicalLogo from "../img/icons/technical_mortar_white.png";
 import mlrsLogo from "../img/icons/mlrs_white.png";
-//import frenchLogo from "../img/icons/120mm_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
-import ub322Logo from "../img/icons/ub32_deployable.png";
 import m113Logo from "../img/icons/m113a3_white.png";
+
+import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon} from "./squadIcon";
 
 /* eslint no-unused-vars: "off" */
 import target from "../img/icons/target.png";
@@ -18,19 +19,21 @@ import target from "../img/icons/target.png";
 
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, unit, logo, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa) {
+    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, damageSpash) {
         this.name = name;
         this.velocity = velocity;
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
         this.logo = logo;
+        this.marker = marker;
         this.logoCannonPos = logoCannonPos;
         this.type = type;
         this.angleType = angleType;
         this.elevationPrecision = elevationPrecision;
         this.minDistance = minDistance;
         this.moa = moa;
+        this.damageSpash = damageSpash;
     }
 
     /**
@@ -57,15 +60,15 @@ export class Weapon {
         if (this.angleType === "high") { return -1; }
         return 1;
     }
-    
+
     /**
      * Return maximum distance for 45°
      * https://en.wikipedia.org/wiki/Projectile_motion#Maximum_distance_of_projectile
      * @returns {number} [distance]
      */
     getMaxDistance() {
-        if (this.velocity.constructor != Array) { 
-            return (this.velocity ** 2) / App.gravity / this.gravityScale; 
+        if (this.velocity.constructor != Array) {
+            return (this.velocity ** 2) / App.gravity / this.gravityScale;
         }
 
         // When using UB32, return last value from UB32_table
@@ -74,47 +77,44 @@ export class Weapon {
 }
 
 
-const weaponTypes = ["deployables", "vehicles"/*, "frenchDLC"*/];
+const weaponTypes = ["deployables", "vehicles",];
 
 const UB32_table = [
-    [100, 335.1200224653227],
-    [200, 305.9582960205495],
-    [300, 283.34779711713827],
-    [400, 269.43092929304714],
-    [500, 256.00067568689457],
-    [600, 246.0597855795005],
-    [700, 230.23902655011395],
-    [800, 227.72135414063865],
-    [900, 227.10330164679877],
-    [1000, 219.51863104815288],
-    [1100, 217.92195975729098],
-    [1200, 213.69727817913733],
-    [1300, 217.46916795849413],
-    [1400, 216.06414872060554],
-    [1500, 213.86509885836008],
-    [1600, 210.59377321283807],
-    [1700, 208.55735633285997],
-    [1800, 207.5305459239776],
-    [1900, 207.7886602381275],
-    [2000, 208.8396419902778],
-    [2050, 206.39437348683896],
-    [2100, 205.87235893665985],
-    [2143, 205.08642659737743],
+    [100,  334.7778886114855],
+    [200, 305.6459342280165],
+    [300, 283.0585190456855],
+    [400, 269.15585935988156],
+    [500, 268.4445467197605],
+    [600, 241.58938992870094],
+    [700, 230.00396877923583],
+    [800, 227.48886673532039],
+    [900, 226.87144522938755],
+    [1000, 219.29451804327465],
+    [1100, 217.69947684093455],
+    [1200, 213.47910836403614],
+    [1300, 217.24714731055712],
+    [1400, 215.84356249799185],
+    [1500, 213.64675771020842],
+    [1600, 210.37877185692568],
+    [1700, 208.344434014631],
+    [1800, 207.3186719065925],
+    [1900, 207.57652270427334],
+    [2000, 208.62643147834694],
+    [2050, 206.18365942119797],
+    [2100, 205.6621778109742],
+    [2143, 204.87704785305388],
 ];
 
 
-export const WEAPONS = [
-    new Weapon("Mortar", 109.890938, 1, [800, 1579], "mil", classicLogo, "130%", "deployables", "high", 0, 51, 50),
-    new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, "110%", "deployables", "low", 1, 0, 300),
-    new Weapon("Hell Cannon", 95, 1, [10, 85], "deg", hellcannonLogo, "130%", "deployables", "high", 1, 160, 100),
 
-    new Weapon("Tech. Mortar", 109.890938, 1, [-45, 135], "deg", technicalLogo, "50%", "vehicles", "high", 1, 51, 50),
-    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, "55%", "vehicles", "low", 1, 0, 300),
-    new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, "60%", "vehicles", "low", 1, 0, 200),
-    new Weapon("M1064 M121", 142, 1, [45, 85.3], "deg", m113Logo, "45%", "vehicles", "high", 1, 336, 40),
-    //new Weapon("Short", 109.890938, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
-    //new Weapon("Medium", 143.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
-    //new Weapon("Long", 171.5, 1, 1520, undefined, "mil", frenchLogo, "135%", "frenchDLC", "high", 0),
+export const WEAPONS = [
+    new Weapon("Mortar", 110, 1, [800, 1579], "mil", classicLogo, mortarIcon, "130%", "deployables", "high", 0, 51, 50),
+    new Weapon("UB-32", UB32_table, 2, [-25, 35], "deg", ub322Logo, ub32Icon, "110%", "deployables", "low", 1, 0, 300),
+    new Weapon("Hell Cannon", 95, 1, [10, 85], "deg", hellcannonLogo, hellIcon, "130%", "deployables", "high", 1, 160, 100),
+    new Weapon("Tech. Mortar", 110, 1, [-45, 135], "deg", technicalLogo,  tMortarIcon, "50%", "vehicles", "high", 1, 51, 50),
+    new Weapon("Tech. UB-32", UB32_table, 2, [-45, 135], "deg", ub32Logo, tub32Icon, "55%", "vehicles", "low", 1, 0, 300),
+    new Weapon("BM-21 Grad", 200, 2, [-45, 135], "deg", mlrsLogo, gradIcon, "60%", "vehicles", "low", 1, 0, 200),
+    new Weapon("M1064 M121", 142, 1, [45, 85.3], "deg", m113Logo, m121Icon, "45%", "vehicles", "high", 1, 340, 50),
 ];
 
 
@@ -130,7 +130,7 @@ export function changeWeapon() {
     $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
-    if (App.ui === 0){drawLine();}
+    if (App.ui === 0) { drawLine(); }
 
     // Update Minimap marker
     App.minimap.updateWeapons();

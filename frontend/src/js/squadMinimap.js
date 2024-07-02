@@ -60,7 +60,7 @@ export var squadMinimap = Map.extend({
             autoPan: false,
             interactive: false,
         });
-      
+    
         // Custom events handlers
         this.on("dblclick", this._handleDoubleCkick, this);
         this.on("contextmenu", this._handleContextMenu, this);
@@ -74,7 +74,7 @@ export var squadMinimap = Map.extend({
     /**
      * Initiate Heightmap & Grid then load layer
      */
-    draw: function () {   
+    draw: function(){
     },
 
 
@@ -101,30 +101,31 @@ export var squadMinimap = Map.extend({
     /**
      * Reset map by clearing every Markers/Layers
      */
-    clear: function () {
+    clear: function(){
         this.markersGroup.clearLayers();
         this.activeWeaponsMarkers.clearLayers();
         this.activeTargetsMarkers.clearLayers();
         this.layerGroup.clearLayers();
 
-        this.setView([-this.tilesSize / 2, this.tilesSize / 2], 2);
+        this.setView([-this.tilesSize/2, this.tilesSize/2], 2);
         $(".btn-delete").hide();
     },
 
     /**
      * Recalc and update every target marker on the minimap
      */
-    updateTargets: function () {
+    updateTargets: function(){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateCalc(target.latlng);
+            target.updateIcon();
         });
     },
 
     /**
     * Recalc and update every target spread circle
     */
-    updateTargetsSpreads: function () {
+    updateTargetsSpreads: function(){
         // Update existent targets
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.updateSpread();
@@ -134,7 +135,7 @@ export var squadMinimap = Map.extend({
     /**
      * Delete every target markers on the map
      */
-    deleteTargets: function () {
+    deleteTargets: function(){
         this.activeTargetsMarkers.eachLayer(function (target) {
             target.delete();
         });
@@ -143,7 +144,7 @@ export var squadMinimap = Map.extend({
     /**
      * Recalc and update every target marker on the minimap
      */
-    updateWeapons: function () {
+    updateWeapons: function(){
         // Update existent targets
         this.activeWeaponsMarkers.eachLayer(function (weapon) {
             weapon.updateWeapon();
@@ -153,14 +154,14 @@ export var squadMinimap = Map.extend({
     /**
      * add Grid to minimap layers
      */
-    showGrid: function () {
+    showGrid: function(){
         this.grid.addTo(this.layerGroup);
     },
 
     /**
      * Hide Grid from minimap layers
      */
-    hideGrid: function () {
+    hideGrid: function(){
         this.grid.removeFrom(this.layerGroup);
     },
 
@@ -168,19 +169,19 @@ export var squadMinimap = Map.extend({
      * Right-Click
      * Place a new WeaponMarker on the minimap
      */
-    _handleContextMenu: function (e) {
+    _handleContextMenu: function(e) {
 
         // If out of bounds
-        if (e.latlng.lat > 0 || e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, { icon: mortarIcon }, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
             return 0;
         } else {
             if (this.activeWeaponsMarkers.getLayers().length === 1) {
-                new squadWeaponMarker(e.latlng, { icon: mortarIcon2 }, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
+                new squadWeaponMarker(e.latlng, {icon: mortarIcon2}, this).addTo(this.markersGroup).addTo(this.activeWeaponsMarkers);
                 this.activeWeaponsMarkers.getLayers()[0].setIcon(mortarIcon1);
                 this.updateTargets();
             }
@@ -191,19 +192,19 @@ export var squadMinimap = Map.extend({
      * Mouse-Over
      * Display and update hovered keypad under cursor
      */
-    _handleMouseMove: function (e) {
+    _handleMouseMove: function (e) { 
 
         // if no mouse support
         if (!matchMedia("(pointer:fine)").matches) { return 1; }
 
         // If out of bounds
-        if (e.latlng.lat > 0 || e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             this.mouseLocationPopup.close();
             return;
         }
 
         this.mouseLocationPopup.setLatLng(e.latlng).openOn(this);
-        this.mouseLocationPopup.setContent("<p>" + getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
+        this.mouseLocationPopup.setContent("<p>"+ getKP(-e.latlng.lat * this.mapToGameScale, e.latlng.lng * this.mapToGameScale) + "</p>");
     },
 
 
@@ -212,31 +213,43 @@ export var squadMinimap = Map.extend({
      * Create a new target, or weapon is no weapon exists
      */
     _handleDoubleCkick: function (e) {
+        var target;
         // If out of bounds
-        if (e.latlng.lat > 0 || e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
+        if (e.latlng.lat > 0 ||  e.latlng.lat < -this.tilesSize || e.latlng.lng < 0 || e.latlng.lng > this.tilesSize) {
             return 1;
         }
 
         if (this.activeWeaponsMarkers.getLayers().length === 0) {
-            new squadWeaponMarker(e.latlng, { icon: mortarIcon }, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
+            new squadWeaponMarker(e.latlng, {icon: mortarIcon}, this).addTo(this.markersGroup, this).addTo(this.activeWeaponsMarkers);
             return 0;
         }
 
-        new squadTargetMarker(e.latlng, { animate: App.userSettings.targetAnimation }, this).addTo(this.markersGroup);
+        target = new squadTargetMarker(e.latlng, {animate: App.userSettings.targetAnimation}, this).addTo(this.markersGroup);
         $(".btn-delete").show();
 
-        if (App.userSettings.targetAnimation) {
-            setTimeout(function () {
+        if (App.userSettings.targetAnimation){
+            if (this.activeWeaponsMarkers.getLayers().length === 1) {
+                if (isNaN(target.options.results.elevation)){ return; }
+            }
+            else {
+                if (isNaN(target.options.results.elevation) && isNaN(target.options.results2.elevation)){ return; }
+            }
+
+            setTimeout(function() {
                 explode(e.containerPoint.x, e.containerPoint.y, -190, 10);
+                target.options.animate = false;
             }, 250);
+
         }
+        
+
     },
 
     /**
      * Mouse-Out of minimap
      * Hide mouse keypad popup when leaving map
      */
-    _handleMouseOut: function () {
+    _handleMouseOut: function() {
         this.mouseLocationPopup.close();
     },
 
