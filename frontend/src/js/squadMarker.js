@@ -160,6 +160,7 @@ export var squadWeaponMarker = squadMarker.extend({
         // Update remaining targets if they exists
         this.map.updateTargets();
     },
+    
     updateWeaponMaxRange: function () {
         if (this.rangeMarker) {
             this.rangeMarker.remove();
@@ -168,66 +169,66 @@ export var squadWeaponMarker = squadMarker.extend({
         let weaponHeight = this.map.heightmap.getHeight(weaponPos);
         const G = 9.8 * App.activeWeapon.gravityScale;
         const maxDistance= App.activeWeapon.getMaxDistance();
-        const optimalAngleRadians = 45 * (Math.PI / 180); // Convert 45 degrees to radians
         const degreesPerMeter = this.map.gameToMapScale;
         let points = [];
         // Calculate trajectory points in all directions
         for (let angle = 0; angle < 360; angle += 4) {
             const directionRadian = degToRad(angle); // Convert angle to radians
             let distance = maxDistance - 500;
-            let hitObstacle = false;
-            // Corrected: Use gameToMapScale for degrees per meter calculation
-
+            let bestPoint = null;
+            let foundMaxDistance = false;
             //this.calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance);
 
-            while (!hitObstacle) {
-                let increment;
-                if (distance < maxDistance * 0.6) {
-                    increment = 40; // Use larger increment when far from maxDistance
-                } else if (distance >= maxDistance * 0.6 && distance <= maxDistance * 0.75) {
-                    increment = 20; // Use medium increment when closer to maxDistance
-                } else {
-                    increment = 5; // Use smallest increment when very close to or beyond maxDistance
-                }
-    
-                distance += increment;  // Increment distance by 20 meters
-    
+            while (!foundMaxDistance) {
+                distance += 10;  // Increment distance by 5 meters
+        
                 // Determine velocity based on distance if velocity is an array
                 let currentVelocity = App.activeWeapon.getVelocity(distance);
-                // Calculate time of flight for the distance
-                const time = distance / (currentVelocity * Math.cos(optimalAngleRadians));
-            
+        
                 // Corrected: Use distance in meters directly with gameToMapScale for accurate position calculation
                 const deltaLat = distance * Math.cos(directionRadian) * degreesPerMeter;
                 const deltaLng = distance * Math.sin(directionRadian) * degreesPerMeter;
-        
+    
                 // Calculate the new position
                 const landingX = weaponPos.lat + deltaLat;
                 const landingY = weaponPos.lng + deltaLng;
-    
-                // Calculate landing height using trajectory formula
-                const yVel = currentVelocity * Math.sin(optimalAngleRadians);
-                const currentHeight =
-              weaponHeight + yVel * time - 0.5 * G * time * time;
+
                 const landingHeight = this.map.heightmap.getHeight({
                     lat: landingX,
                     lng: landingY,
                 });
-                if (currentHeight <= landingHeight || distance > maxDistance + 400) {
-                    // If the projectile hits an obstacle or lands
-                    points.push([landingX, landingY]);
-                    hitObstacle = true;
+                let hitObstacle = false;
+                let noHit = false;
+                for (let launchAngle = 35; launchAngle <= 60; launchAngle += 1) {
+                    const launchAngleRadians = degToRad(launchAngle);
+                    const time = distance / (currentVelocity * Math.cos(launchAngleRadians));
+                    const yVel = currentVelocity * Math.sin(launchAngleRadians);
+                    const currentHeight = weaponHeight + yVel * time - 0.5 * G * time * time;
+
+                    if (currentHeight <= landingHeight || distance > maxDistance + 600) {
+                        bestPoint = [landingX, landingY];
+                        hitObstacle = true;
+                    } else {
+                        noHit = true;
+                    }
+                }
+                if (hitObstacle == true && noHit == false && bestPoint !== null){
+                    points.push(bestPoint);
+                    foundMaxDistance = true;
                 }
             }
+       
         }
         this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
         if (!App.userSettings.weaponMinMaxRange) {
-            //this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
+        //this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
             this.rangeMarker.setStyle(this.minMaxDistCircleOff);
         } else {
             this.rangeMarker.setStyle(this.maxDistCircleOn);
         }
     },
+
+
 
     /*calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
         let points = [];
