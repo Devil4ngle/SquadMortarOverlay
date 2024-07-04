@@ -178,43 +178,40 @@ export var squadWeaponMarker = squadMarker.extend({
         // Update remaining targets if they exists
         this.map.updateTargets();
     },
-    
+
     updateWeaponMaxRange: function () {
+
+        // Debounce this function if it's called too frequently
+        if (this.updateInProgress) return;
+        this.updateInProgress = true;
+        setTimeout(() => this.updateInProgress = false, 20); 
+
         if (this.rangeMarker) {
             this.rangeMarker.remove();
         }
-        let weaponPos=this.getLatLng();
-        let weaponHeight = this.map.heightmap.getHeight(weaponPos);
+        const weaponPos = this.getLatLng();
+        const weaponHeight = this.map.heightmap.getHeight(weaponPos);
         const G = 9.8 * App.activeWeapon.gravityScale;
-        const maxDistance= App.activeWeapon.getMaxDistance();
+        const maxDistance = App.activeWeapon.getMaxDistance();
         const degreesPerMeter = this.map.gameToMapScale;
         let points = [];
-        // Calculate trajectory points in all directions
-        for (let angle = 0; angle < 360; angle += 4) {
-            const directionRadian = degToRad(angle); // Convert angle to radians
+    
+        for (let angle = 0; angle < 360; angle += 5) {
+            const directionRadian = degToRad(angle);
             let distance = maxDistance - 500;
             let bestPoint = null;
             let foundMaxDistance = false;
-            //this.calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance);
-
+    
             while (!foundMaxDistance) {
-                distance += 10;  // Increment distance by 5 meters
-        
-                // Determine velocity based on distance if velocity is an array
-                let currentVelocity = App.activeWeapon.getVelocity(distance);
-        
-                // Corrected: Use distance in meters directly with gameToMapScale for accurate position calculation
+                distance += 15;
+    
+                const currentVelocity = App.activeWeapon.getVelocity(distance);
                 const deltaLat = distance * Math.cos(directionRadian) * degreesPerMeter;
                 const deltaLng = distance * Math.sin(directionRadian) * degreesPerMeter;
-    
-                // Calculate the new position
                 const landingX = weaponPos.lat + deltaLat;
                 const landingY = weaponPos.lng + deltaLng;
-
-                const landingHeight = this.map.heightmap.getHeight({
-                    lat: landingX,
-                    lng: landingY,
-                });
+                const landingHeight = this.map.heightmap.getHeight({ lat: landingX, lng: landingY });
+    
                 let hitObstacle = false;
                 let noHit = false;
                 for (let launchAngle = 35; launchAngle <= 60; launchAngle += 1) {
@@ -222,7 +219,7 @@ export var squadWeaponMarker = squadMarker.extend({
                     const time = distance / (currentVelocity * Math.cos(launchAngleRadians));
                     const yVel = currentVelocity * Math.sin(launchAngleRadians);
                     const currentHeight = weaponHeight + yVel * time - 0.5 * G * time * time;
-
+    
                     if (currentHeight <= landingHeight || distance > maxDistance + 600) {
                         bestPoint = [landingX, landingY];
                         hitObstacle = true;
@@ -230,22 +227,16 @@ export var squadWeaponMarker = squadMarker.extend({
                         noHit = true;
                     }
                 }
-                if (hitObstacle == true && noHit == false && bestPoint !== null){
+                if (hitObstacle && !noHit && bestPoint !== null) {
                     points.push(bestPoint);
                     foundMaxDistance = true;
                 }
             }
-       
         }
+    
         this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
-        if (!App.userSettings.weaponMinMaxRange) {
-        //this.minRangeMarker.setStyle(this.minMaxDistCircleOff);
-            this.rangeMarker.setStyle(this.minMaxDistCircleOff);
-        } else {
-            this.rangeMarker.setStyle(this.maxDistCircleOn);
-        }
+        this.rangeMarker.setStyle(App.userSettings.weaponMinMaxRange ? this.maxDistCircleOn : this.minMaxDistCircleOff);
     },
-
 
 
     /*calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
@@ -354,7 +345,7 @@ export var squadWeaponMarker = squadMarker.extend({
         //this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
         this.miniCircle.setLatLng(e.latlng);
-
+        this.updateWeaponMaxRange();
     },
 
     // Catch this events so user can't place a target by mistake while trying to delete weapon
@@ -374,9 +365,6 @@ export var squadWeaponMarker = squadMarker.extend({
             layer.spreadMarker2.setStyle({opacity: 0, fillOpacity: 0});
         }); 
         this.miniCircle.setStyle({opacity: 1});
-        if (this.rangeMarker) {
-            this.rangeMarker.remove();
-        }
     },
 
     _handleDragEnd: function () {
@@ -388,7 +376,6 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
         this.map.updateTargets();
-        this.updateWeaponMaxRange();
     },
 });
 
