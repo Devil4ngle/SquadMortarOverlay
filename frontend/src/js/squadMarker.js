@@ -182,8 +182,8 @@ export var squadWeaponMarker = squadMarker.extend({
     
     updateWeaponMaxRange: function (precison = true) {
         let turnDirectionAngle = 1;
-        let  turnLaunchAngle = 0.5;
-        let  maxRangeTreshold = 3;
+        let turnLaunchAngle = 0.2;
+        let maxRangeTreshold = 3;
         if (!precison){
             turnDirectionAngle = 5;
             turnLaunchAngle = 1;
