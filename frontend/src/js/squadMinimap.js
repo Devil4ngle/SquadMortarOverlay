@@ -1,4 +1,4 @@
-import { ImageOverlay, Map, CRS, Util, LayerGroup, LatLngBounds, Popup } from "leaflet";
+import { ImageOverlay, Map, CRS, Util, LayerGroup, LatLngBounds, Popup , svg} from "leaflet";
 import squadGrid from "./squadGrid";
 import squadHeightmap from "./squadHeightmaps";
 import { App } from "./conf";
@@ -38,7 +38,8 @@ export var squadMinimap = Map.extend({
             smoothSensitivity: 1.4,   
             zoomSnap: 0,
             zoomDelta: 0,
-            maxZoom:10
+            maxZoom:10,
+            renderer: svg({padding: 3}),
         };
 
         Util.setOptions(this, options);

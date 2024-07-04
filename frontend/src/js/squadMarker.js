@@ -179,64 +179,79 @@ export var squadWeaponMarker = squadMarker.extend({
         this.map.updateTargets();
     },
 
+    
     updateWeaponMaxRange: function () {
-
-        // Debounce this function if it's called too frequently
         if (this.updateInProgress) return;
         this.updateInProgress = true;
-        setTimeout(() => this.updateInProgress = false, 20); 
-
+        setTimeout(() => this.updateInProgress = false, 20);
+    
         if (this.rangeMarker) {
             this.rangeMarker.remove();
         }
+    
         const weaponPos = this.getLatLng();
         const weaponHeight = this.map.heightmap.getHeight(weaponPos);
         const G = 9.8 * App.activeWeapon.gravityScale;
-        const maxDistance = App.activeWeapon.getMaxDistance();
+        const estimatedMaxDistance = App.activeWeapon.getMaxDistance();
         const degreesPerMeter = this.map.gameToMapScale;
-        let points = [];
+        const points = [];
     
         for (let angle = 0; angle < 360; angle += 5) {
             const directionRadian = degToRad(angle);
-            let distance = maxDistance - 500;
-            let bestPoint = null;
+            let left = estimatedMaxDistance - 500;
+            let right = estimatedMaxDistance + 500;
             let foundMaxDistance = false;
     
-            while (!foundMaxDistance) {
-                distance += 15;
-    
-                const currentVelocity = App.activeWeapon.getVelocity(distance);
-                const deltaLat = distance * Math.cos(directionRadian) * degreesPerMeter;
-                const deltaLng = distance * Math.sin(directionRadian) * degreesPerMeter;
+            while (right - left > 15) {
+                const mid = Math.floor((left + right) / 2);
+                const currentVelocity = App.activeWeapon.getVelocity(mid);
+                const deltaLat = mid * Math.cos(directionRadian) * degreesPerMeter;
+                const deltaLng = mid * Math.sin(directionRadian) * degreesPerMeter;
                 const landingX = weaponPos.lat + deltaLat;
                 const landingY = weaponPos.lng + deltaLng;
                 const landingHeight = this.map.heightmap.getHeight({ lat: landingX, lng: landingY });
     
                 let hitObstacle = false;
                 let noHit = false;
-                for (let launchAngle = 35; launchAngle <= 60; launchAngle += 1) {
+    
+                for (let launchAngle = 35; launchAngle <= 60; launchAngle += 5) {
                     const launchAngleRadians = degToRad(launchAngle);
-                    const time = distance / (currentVelocity * Math.cos(launchAngleRadians));
+                    const time = mid / (currentVelocity * Math.cos(launchAngleRadians));
                     const yVel = currentVelocity * Math.sin(launchAngleRadians);
                     const currentHeight = weaponHeight + yVel * time - 0.5 * G * time * time;
     
-                    if (currentHeight <= landingHeight || distance > maxDistance + 600) {
-                        bestPoint = [landingX, landingY];
+                    if (currentHeight <= landingHeight) {
                         hitObstacle = true;
                     } else {
                         noHit = true;
                     }
+    
+                    if (hitObstacle && noHit) break;
                 }
-                if (hitObstacle && !noHit && bestPoint !== null) {
-                    points.push(bestPoint);
+    
+                if (hitObstacle && !noHit) {
+                    right = mid;
+                } else {
+                    left = mid;
+                }
+    
+                if (right - left <= 10) {
+                    points.push([landingX, landingY]);
                     foundMaxDistance = true;
                 }
+            }
+    
+            if (!foundMaxDistance) {
+                const finalLat = weaponPos.lat + right * Math.cos(directionRadian) * degreesPerMeter;
+                const finalLng = weaponPos.lng + right * Math.sin(directionRadian) * degreesPerMeter;
+                points.push([finalLat, finalLng]);
             }
         }
     
         this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
         this.rangeMarker.setStyle(App.userSettings.weaponMinMaxRange ? this.maxDistCircleOn : this.minMaxDistCircleOff);
     },
+    
 
 
     /*calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
