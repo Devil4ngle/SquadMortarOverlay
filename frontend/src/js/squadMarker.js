@@ -235,7 +235,7 @@ export var squadWeaponMarker = squadMarker.extend({
                     left = mid;
                 }
     
-                if (right - left <= 10) {
+                if (right - left <= 15) {
                     points.push([landingX, landingY]);
                     foundMaxDistance = true;
                 }
