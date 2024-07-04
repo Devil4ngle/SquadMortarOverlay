@@ -180,11 +180,19 @@ export var squadWeaponMarker = squadMarker.extend({
     },
 
     
-    updateWeaponMaxRange: function () {
-        if (this.updateInProgress) return;
-        this.updateInProgress = true;
-        setTimeout(() => this.updateInProgress = false, 20);
-    
+    updateWeaponMaxRange: function (precison = true) {
+        let turnDirectionAngle = 1;
+        let  turnLaunchAngle = 0.5;
+        let  maxRangeTreshold = 3;
+        if (!precison){
+            turnDirectionAngle = 5;
+            turnLaunchAngle = 1;
+            maxRangeTreshold = 20;
+            if (this.updateInProgress) return;
+            this.updateInProgress = true;
+            setTimeout(() => this.updateInProgress = false, 20);
+        }
+       
         if (this.rangeMarker) {
             this.rangeMarker.remove();
         }
@@ -196,13 +204,13 @@ export var squadWeaponMarker = squadMarker.extend({
         const degreesPerMeter = this.map.gameToMapScale;
         const points = [];
     
-        for (let angle = 0; angle < 360; angle += 5) {
+        for (let angle = 0; angle < 360; angle += turnDirectionAngle) {
             const directionRadian = degToRad(angle);
             let left = estimatedMaxDistance - 500;
             let right = estimatedMaxDistance + 500;
             let foundMaxDistance = false;
     
-            while (right - left > 15) {
+            while (right - left > maxRangeTreshold) {
                 const mid = Math.floor((left + right) / 2);
                 const currentVelocity = App.activeWeapon.getVelocity(mid);
                 const deltaLat = mid * Math.cos(directionRadian) * degreesPerMeter;
@@ -214,7 +222,7 @@ export var squadWeaponMarker = squadMarker.extend({
                 let hitObstacle = false;
                 let noHit = false;
     
-                for (let launchAngle = 35; launchAngle <= 60; launchAngle += 5) {
+                for (let launchAngle = 35; launchAngle <= 60; launchAngle += turnLaunchAngle) {
                     const launchAngleRadians = degToRad(launchAngle);
                     const time = mid / (currentVelocity * Math.cos(launchAngleRadians));
                     const yVel = currentVelocity * Math.sin(launchAngleRadians);
@@ -235,7 +243,7 @@ export var squadWeaponMarker = squadMarker.extend({
                     left = mid;
                 }
     
-                if (right - left <= 15) {
+                if (right - left <= maxRangeTreshold) {
                     points.push([landingX, landingY]);
                     foundMaxDistance = true;
                 }
@@ -360,7 +368,7 @@ export var squadWeaponMarker = squadMarker.extend({
         //this.rangeMarker.setLatLng(e.latlng);
         this.minRangeMarker.setLatLng(e.latlng);
         this.miniCircle.setLatLng(e.latlng);
-        this.updateWeaponMaxRange();
+        this.updateWeaponMaxRange(false);
     },
 
     // Catch this events so user can't place a target by mistake while trying to delete weapon
@@ -391,6 +399,7 @@ export var squadWeaponMarker = squadMarker.extend({
         this.miniCircle.setStyle({opacity: 0});
         this.setOpacity(0);
         this.map.updateTargets();
+        this.updateWeaponMaxRange();
     },
 });
 
