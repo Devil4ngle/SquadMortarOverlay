@@ -48,8 +48,7 @@ $(function () {
     socketMap.addEventListener("message", async (event) => {
         if (event.data === "Map") {
             if (socketMap.readyState === WebSocket.OPEN) {
-                const LAYERMODE = $("#mapLayerMenu .active").attr("value");
-                let imageUrl = "maps" + App.minimap.activeMap.mapURL + LAYERMODE + "/0.webp";
+                let imageUrl = "maps" + App.minimap.activeMap.mapURL + "basemap/0.webp";
                 // Fetch the image and send its binary data
                 const response = await fetch(imageUrl);
                 const imageBlob = await response.blob();
@@ -68,9 +67,35 @@ $(function () {
         if (event.data instanceof Blob) {
             const url = URL.createObjectURL(event.data);
             App.minimap.activeLayer.setUrl(url);
+            const notification = document.createElement("div");
+            notification.innerText = "Map Updated!";
+            notification.style.position = "fixed";
+            notification.style.top = "15px";
+            notification.style.left = "50%";
+            notification.style.transform = "translateX(-50%)";
+            notification.style.backgroundColor = "green";
+            notification.style.padding = "10px";
+            notification.style.borderRadius = "5px";
+            notification.style.zIndex = "1000";
+            notification.style.opacity = "0";
+            notification.style.transition = "opacity 0.5s";
+            document.body.appendChild(notification);
+            
+            // Fade in
+            setTimeout(() => {
+                notification.style.opacity = "1";
+            }, 10); // Delay to ensure the element is rendered before starting the fade-in
+            
+            // Fade out after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = "0";
+                // Remove the notification after fade out
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500); // Match the duration of the opacity transition
+            }, 2500);
         }
     });
-    
     let prevCoorArray = "";
 
     function checkCoordinates() {
@@ -96,7 +121,9 @@ $(function () {
         }
         if (coorArray !== prevCoorArray) {
             prevCoorArray = coorArray;
-            socketCoordinates.send(coorArray);
+            if (socketCoordinates.readyState === WebSocket.OPEN) {
+                socketCoordinates.send(coorArray);
+            }
         }
     }
 
