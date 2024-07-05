@@ -18,6 +18,9 @@ To download and install SquadAutoMortars:
 1. Go to [https://github.com/Devil4ngle/squadmortar/releases](https://github.com/Devil4ngle/squadmortar/releases).
 2. Download `squadMortarOverlay.exe`.
 3. Run `squadMortarOverlay.exe`.
+   
+![image](https://github.com/Devil4ngle/squadmortar/assets/101042789/2debdd3f-e5a2-4f13-9a59-fb48c6bd3b72)
+
 
 ## Supported Screen Sizes
 1920x1080, 2560x1440, 3840x2160
