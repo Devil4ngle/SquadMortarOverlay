@@ -2,7 +2,7 @@
 
 <a href="https://github.com/Devil4ngle/squadmortar/blob/master/LICENSE.md"><img src="https://img.shields.io/github/license/Naereen/StrapDown.js.svg" alt="LICENSE"></a>
 
-[![Watch the video](https://img.youtube.com/vi/bt2dL55Eh84/hqdefault.jpg)](https://www.youtube.com/watch?v=bt2dL55Eh84)
+[![Watch the video](https://img.youtube.com/vi/DTWZH9Qxk6E/hqdefault.jpg)](https://www.youtube.com/watch?v=DTWZH9Qxk6E)
 ## Features
   
 - **Sync Map:**
