@@ -28,7 +28,7 @@
 If your screen size is not supported, please join Discord so I will add it: 
 [Squadmortar Overlay Discord](https://discord.gg/Qc5y4satdz).
 
-## Will this program get me banned?
+## Will this program get you banned?
 No, it will not get you banned. It only takes a screenshot of the screen and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
 
 ## Credits
