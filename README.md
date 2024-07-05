@@ -4,14 +4,7 @@
 
 [![Watch the video](https://img.youtube.com/vi/DTWZH9Qxk6E/hqdefault.jpg)](https://www.youtube.com/watch?v=DTWZH9Qxk6E)
 ## Features
-  
-- **Sync Map:**
-
-   Capture a screenshot of the in-game map and overlay it with the SquadCalc map.
-
-- **Overlay range/coordinates:**
-
-   Puts the range/coordinates on screen
+![image](https://github.com/Devil4ngle/squadmortar/assets/101042789/34f153d2-f65e-4a15-89bc-21046b297dad)
 
 ## How to make it run?
 1. Go to [https://github.com/Devil4ngle/squadmortar/releases](https://github.com/Devil4ngle/squadmortar/releases).
