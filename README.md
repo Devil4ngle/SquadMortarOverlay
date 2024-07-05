@@ -14,7 +14,6 @@
    Puts the range/coordinates on screen
 
 ## How to make it run?
-To download and run Suad Mortar Overlay:
 1. Go to [https://github.com/Devil4ngle/squadmortar/releases](https://github.com/Devil4ngle/squadmortar/releases).
 2. Download `squadMortarOverlay.exe`.
 3. Run `squadMortarOverlay.exe`.
