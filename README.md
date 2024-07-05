@@ -21,7 +21,7 @@ To download and install SquadAutoMortars:
 3. Run `squadMortarOverlay.exe`.
 
 ## Supported Sizes
-1920x1080, 2560x1440
+1920x1080, 2560x1440, 3840x2160
 
 ## Unsupported Screen Size
 If your screen size is not supported, please join Discord so I will add it: 
