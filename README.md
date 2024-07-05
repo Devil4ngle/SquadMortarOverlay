@@ -19,7 +19,7 @@ To download and install SquadAutoMortars:
 2. Download `squadMortarOverlay.exe`.
 3. Run `squadMortarOverlay.exe`.
 
-## Supported Sizes
+## Supported Screen Sizes
 1920x1080, 2560x1440, 3840x2160
 
 ## Unsupported Screen Size
@@ -33,7 +33,7 @@ No, it will not get you banned. It only takes a screenshot of the screen and doe
 The website is derived from the GitHub repository 
 [SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc), and the original website can be found at [SquadCalc](https://squadcalc.app/). 
 
-Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the invaluable help with SquadCalc throughout the development of this project.
+Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the help with SquadCalc throughout the development of this project.
 
 ---
 
