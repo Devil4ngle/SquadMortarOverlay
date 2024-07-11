@@ -1,9 +1,15 @@
 import { App } from "./conf";
+import { UB32Weapon } from "./ub32";
 
 export class Weapon {
     constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, falloff) {
         this.name = name;
-        this.velocity = velocity;
+        if (name === "UB-32") {
+            this.ub32 = new UB32Weapon();
+            this.velocity = velocity;
+        } else {
+            this.velocity = velocity;
+        }
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
@@ -26,13 +32,10 @@ export class Weapon {
      * @returns {number} - Velocity of the weapon for said distance
      */
     getVelocity(distance) {
-        if (this.velocity.constructor != Array) { return this.velocity; }
-
-        for (let i = 1; i < this.velocity.length; i += 1) {
-            if (distance < this.velocity[i][0]) {
-                return this.velocity[i - 1][1] + ((distance - this.velocity[i - 1][0]) / (this.velocity[i][0] - this.velocity[i - 1][0])) * (this.velocity[i][1] - this.velocity[i - 1][1]);
-            }
+        if (this.name === "UB-32") {
+            return this.ub32.getVelocity(distance);
         }
+        return this.velocity; // For other weapons
     }
 
     /**
@@ -63,7 +66,3 @@ export class Weapon {
     }
 
 }
-
-
-
-
