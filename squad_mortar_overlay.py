@@ -13,31 +13,30 @@ from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
 
-VERSION = "2.1.1"
+VERSION = "2.2.0"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
     "coordinates_x": 700,
     "coordinates_y": 5,
     "font_size": 17,
+    "coordinates_visible": True,
 }
 
 CONFIG_FILE_PATH = "config/config.json"
 
-TEXT_CONTENT = """ Optional Improvements for Map Overlay:
- Capslock -> Right-Top site of Screen -> Following options
-    - Grid Opacity 0 or lower then 1
-    - Map Icon Scale between 0.3 - 0.7
-
- When this application is started, 
+TEXT_CONTENT = """ When this application is started, 
  https://devil4ngle.github.io/squadmortar/ (SquadCalc) needs to be
  refreshed if already open.
 
- When assigning new coordinates, the location will be updated upon 
+ 
+ When changing settings they will be applied upon 
  adding new mortar points on (SquadCalc).
 
+ 
  When pressing the overlay hotkey the Minimap in Squad must be 
- open (the Capslock one) and fully zoomed out with side bar open."""
+ open (the Capslock one) with the side bar open. 
+ Fully zoomed in screenshot on the Minimap might fail."""
 
 # Create config directory if it does not exist
 if not os.path.exists("config"):
@@ -69,6 +68,7 @@ settings = {
     "coordinates_x": read_config("coordinates_x"),
     "coordinates_y": read_config("coordinates_y"),
     "font_size": read_config("font_size"),
+    "coordinates_visible": read_config("coordinates_visible"),
 }
 
 
@@ -100,17 +100,17 @@ async def handle_coordinates(websocket):
         coordinate_window.wm_attributes("-toolwindow", True)
         coordinate_window.withdraw()
         # Create a label to display coordinates
-        label = tk.Label(coordinate_window, font=("Arial Black", settings["font_size"]))
+        label = tk.Label(coordinate_window, font=("Open Sans", settings["font_size"]))
         label.pack()
 
         while True:
             response = await websocket.recv()
 
-            if not response:
+            if settings['coordinates_visible'] == False or not response:
                 coordinate_window.withdraw()  # Hide the window
             else:
                 label.config(text=response)  # Update label text
-                label.config(font=("Arial Black", settings["font_size"]))
+                label.config(font=("Open Sans", settings["font_size"]))
                 coordinate_window.geometry(
                     f"+{settings['coordinates_x']}+{settings['coordinates_y']}"
                 )
@@ -194,7 +194,7 @@ def ask_font_size():
         settings["font_size"] = font_size
         save_config("font_size", font_size)
     button_font_size.config(
-        text="ASSIGN FONT SIZE: '" + str(settings["font_size"]) + "'"
+        text="CHANGE FONT SIZE: '" + str(settings["font_size"]) + "'"
     )
 
 
@@ -203,7 +203,7 @@ def ask_hotkey():
     if new_hotkey:
         settings["hotkey"] = new_hotkey
         save_config("hotkey", new_hotkey)
-    button_hotkey.config(text="ASSIGN HOTKEY: '" + settings["hotkey"] + "'")
+    button_hotkey.config(text="CHANGE OVERLAY HOTKEY: '" + settings["hotkey"] + "'")
 
 
 def ask_coordinates():
@@ -215,7 +215,7 @@ def ask_coordinates():
         save_config("coordinates_x", new_x)
         save_config("coordinates_y", new_y)
         button_coordinates.config(
-            text=f"ASSIGN COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}"
+            text=f"CHANGE COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}"
         )
 
 
@@ -239,29 +239,46 @@ def check_version():
             "Error", f"An error occurred while checking for updates: {str(e)}"
         )
 
+def toggle_coordinate_window():
+    current_state = settings["coordinates_visible"]
+    new_state = not current_state
+    settings["coordinates_visible"] = new_state
+    save_config("coordinates_visible", new_state)
+    if settings["coordinates_visible"]:
+        button_toggle_coordinates.config(text="COORDINATE WINDOW: ON")
+    else:
+        button_toggle_coordinates.config(text="COORDINATE WINDOW: OFF")
 
 # Create frames
+frame0 = tk.Frame(root, bg="black")
 frame1 = tk.Frame(root, bg="black")
 frame2 = tk.Frame(root, bg="black")
 
 # Create buttons
+button_toggle_coordinates = tk.Button(
+    frame0,
+    text="COORDINATES WINDOW: " + ("ON" if settings["coordinates_visible"] else "OFF"), 
+    command=toggle_coordinate_window,
+    bg="gray",
+    fg="white",
+)
 button_hotkey = tk.Button(
-    frame1,
-    text="ASSIGN HOTKEY: '" + settings["hotkey"] + "'",
+    frame0,
+    text="CHANGE OVERLAY HOTKEY:  '" + settings["hotkey"] + "'",
     command=ask_hotkey,
     bg="gray",
     fg="white",
 )
 button_font_size = tk.Button(
     frame1,
-    text="ASSIGN FONT SIZE: '" + str(settings["font_size"]) + "'",
+    text="CHANGE FONT SIZE: " + str(settings["font_size"]),
     command=ask_font_size,
     bg="gray",
     fg="white",
 )
 button_coordinates = tk.Button(
     frame1,
-    text=f"ASSIGN COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}",
+    text=f"CHANGE COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}",
     command=ask_coordinates,
     bg="gray",
     fg="white",
@@ -281,15 +298,17 @@ button_update = tk.Button(
 
 
 # Place buttons in the frames
-button_hotkey.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 0))
-button_font_size.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 0))
+button_toggle_coordinates.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 0))
+button_hotkey.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 0))
+button_font_size.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 0))
 button_coordinates.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 0))
 button_github.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(5, 5), pady=(5, 5))
 button_discord.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
-button_html.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
 button_update.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
+button_html.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5), pady=(5, 5))
 
 # Place frames on the root window
+frame0.pack(fill=tk.X)
 frame1.pack(fill=tk.X)
 frame2.pack(fill=tk.X)
 
