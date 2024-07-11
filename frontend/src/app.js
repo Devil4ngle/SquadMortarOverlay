@@ -22,7 +22,6 @@ import { createLine, drawLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
 import packageInfo from "../package.json";
 import "./js/listeners.js";
-import { radToMil, radToDeg } from "./js/utils";
 
 $(function() {
     loadSettings();
@@ -103,29 +102,28 @@ $(function() {
         let coorArray = "";
         if (App.minimap.activeTargetsMarkers) {
             App.minimap.activeTargetsMarkers.eachLayer(function (target) {
-                debugger;
                 const BEARING = target.firingSolution1.bearing;
-                let ELEV;
+                let elevation;
                 if (App.minimap.activeWeaponsMarkers.getLayers()[0].angleType === "high"){
-                    ELEV = target.firingSolution1.elevation.high;
+                    elevation = target.firingSolution1.elevation.high;
                 }
                 else {
-                    ELEV = target.firingSolution1.elevation.low;
+                    elevation = target.firingSolution1.elevation.low;
                 }
 
-                if (isNaN(ELEV)) {
-                    ELEV = "---";
+                if (isNaN(elevation)) {
+                    elevation = "---";
                 } else {
                     if (App.activeWeapon.unit === "mil") {
-                        ELEV = radToMil(ELEV).toFixed(0);
+                        elevation = elevation.mil.toFixed(0);
                     } else {
-                        ELEV = radToDeg(ELEV).toFixed(1);
+                        elevation = elevation.deg.toFixed(1);
                     }
                 }
                 if (coorArray !== "") {
                     coorArray = coorArray + "\n";
                 }
-                coorArray = coorArray + `${ELEV} | ${BEARING.toFixed(1)}°`;
+                coorArray = coorArray + `${elevation} | ${BEARING.toFixed(1)}°`;
             });
         }
         if (coorArray !== prevCoorArray) {

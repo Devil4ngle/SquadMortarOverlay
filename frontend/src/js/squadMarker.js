@@ -1,3 +1,5 @@
+/* global L */
+
 import { Marker, Circle, CircleMarker, Popup} from "leaflet";
 import { ellipse } from "./ellipse";
 import { App } from "./conf";
@@ -182,14 +184,14 @@ export var squadWeaponMarker = squadMarker.extend({
         if (this.rangeMarker) {
             this.rangeMarker.remove();
         }
-    
         const weaponPos = this.getLatLng();
-        const weaponHeight = this.map.heightmap.getHeight(weaponPos);
         const G = 9.8 * App.activeWeapon.gravityScale;
         const estimatedMaxDistance = App.activeWeapon.getMaxDistance();
         const degreesPerMeter = this.map.gameToMapScale;
         const points = [];
-    
+        let weaponHeight = this.map.heightmap.getHeight(weaponPos);
+        weaponHeight = weaponHeight + this.heightPadding;
+        
         for (let angle = 0; angle < 360; angle += turnDirectionAngle) {
             const directionRadian = degToRad(angle);
             let left = estimatedMaxDistance - 500;
@@ -245,72 +247,6 @@ export var squadWeaponMarker = squadMarker.extend({
         this.rangeMarker = L.polygon(points, {color: "blue"}).addTo(this.map.markersGroup);
         this.rangeMarker.setStyle(App.userSettings.weaponMinMaxRange ? this.maxDistCircleOn : this.minMaxDistCircleOff);
     },
-    
-
-
-    /*calculateBlindSpots(weaponHeight,weaponPos,velocity,directionRadian,G,degreesPerMeter,maxDistance){
-        let points = [];
-        for (let shootingAngle = 3; shootingAngle < 44; shootingAngle += 1) {
-            const shootingAngleRadians = degToRad(shootingAngle); // Convert angle to radians
-            const sin2Angle = Math.sin(2 * shootingAngleRadians);
-            
-
-            let currentVelocity = velocity;
-            if (Array.isArray(velocity)) {
-                currentVelocity = velocity[5][1];
-            }
-
-            // Simplified range formula ignoring air resistance: range = (v^2 * sin(2*angle)) / g
-            const range = (currentVelocity * currentVelocity * sin2Angle) / G / App.activeWeapon.gravityScale;
-      
-            let distance = 0;
-            let hitObstacle = false;
-            while (!hitObstacle) {
-                distance += 20;  
-                let currentVelocity = velocity;
-                if (Array.isArray(velocity)) {
-                    let velocityEntry = velocity.find((entry, index) => {
-                        return distance <= entry[0] || index === velocity.length - 1;
-                    });
-                    currentVelocity = velocityEntry[1];
-                }
-    
-                // Calculate time of flight for the distance
-                const time = distance / (currentVelocity * Math.cos(shootingAngleRadians));
-            
-                // Corrected: Use distance in meters directly with gameToMapScale for accurate position calculation
-                const deltaLat = distance * Math.cos(directionRadian) * degreesPerMeter;
-                const deltaLng = distance * Math.sin(directionRadian) * degreesPerMeter;
-        
-                // Calculate the new position
-                const landingX = weaponPos.lat + deltaLat;
-                const landingY = weaponPos.lng + deltaLng;
-    
-                // Calculate landing height using trajectory formula
-                const yVel = currentVelocity * Math.sin(shootingAngleRadians);
-                const currentHeight =
-              weaponHeight + yVel * time - 0.5 * G * time * time;
-                const landingHeight = this.map.heightmap.getHeight({
-                    lat: landingX,
-                    lng: landingY,
-                });
-                if (currentHeight <= landingHeight || distance > maxDistance + 400) {
-                    // If the projectile hits an obstacle or lands
-                    hitObstacle = true;
-                }
-            }
-            if (range - distance  > 150){
-                const deltaLat = range * Math.cos(directionRadian) * degreesPerMeter;
-                const deltaLng = range * Math.sin(directionRadian) * degreesPerMeter;
-                const landingX = weaponPos.lat + deltaLat;
-                const landingY = weaponPos.lng + deltaLng; 
-                points.push([landingX, landingY]);
-                
-            }
-
-        }
-        this.blindSpotMarker = L.polygon(points, {color: "red"}).addTo(this.map.markersGroup);
-    },*/
 
     /**
      * update calcs, spread markers
@@ -417,6 +353,7 @@ export var squadWeaponMarker = squadMarker.extend({
             this.value = Math.max(0, Math.min(this.value, 100)); // ensure 0 < value < 100
             weapon.heightPadding = parseFloat(this.value);
             App.minimap.updateTargets();
+            weapon.updateWeaponMaxRange();
         });
 
         DIALOG.showModal();
