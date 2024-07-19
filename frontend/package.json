@@ -28,7 +28,7 @@
     "test:htmlhint": "htmlhint --nocolor ./src/",
     "test:w3c": "html-validator --quiet --continue ./src/",
     "elint:fix": "npx eslint -c ./config/.eslintrc.json ./src/ --fix",
-    "cpdir": "node -e \"require('fs').cpSync('./public/maps', './dist/maps', {recursive: true});\""
+    "cpdir": "node -e \"require('fs').cpSync('./public/', './dist/', {recursive: true});\""
   },
   "devDependencies": {
     "@playwright/test": "^1.43.1",
