@@ -7,6 +7,7 @@ import { LatLng } from "leaflet";
 
 
 export default class SquadFiringSolution {
+
     constructor(weaponLatLng, targetLatLng, map, heightPadding) {
         this.map = map;
         this.activeWeapon = App.activeWeapon;
@@ -18,7 +19,7 @@ export default class SquadFiringSolution {
         this.velocity = App.activeWeapon.getVelocity(this.distance);
         this.weaponHeight = this.map.heightmap.getHeight(weaponLatLng) + heightPadding;
         this.targetHeight = this.map.heightmap.getHeight(targetLatLng);
-        this.heightDiff = this.targetHeight - this.weaponHeight;
+        this.heightDiff =  this.targetHeight - this.weaponHeight;
         this.elevation = {low: [], high: []};
         this.elevation.low.rad = this.getElevation(this.distance, this.heightDiff, this.velocity, true);
         this.elevation.low.deg = this.radToDeg(this.elevation.low.rad);

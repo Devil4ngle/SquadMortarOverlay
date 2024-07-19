@@ -6,18 +6,19 @@ import mlrsLogo from "../img/icons/mlrs_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
 import m113Logo from "../img/icons/m113a3_white.png";
 /* eslint no-unused-vars: "off" */
+import target from "../img/icons/target.png";
 
 import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon} from "../js/squadIcon";
 
-export const WEAPONSTYPE = ["deployables", "vehicles",];
+
+export const WEAPONSTYPE = ["deployables", "vehicles"];
 
 export var WEAPONS = [
     {
         name: "Mortar",
         initialVelocity: 110,
         deceleration: 0,
-        decelerationTime : 0,
-        gravityScale: 1,
+        decelerationTime : 0,        gravityScale: 1,
         minElevation: [800, 1579],
         unit: "mil",
         logo: classicLogo,
@@ -30,6 +31,7 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 350,
         explosionRadius: [0, 40],
+        explosionDistanceFromImpact: 1,
         damageFallOff: 7,
     },
     {
@@ -48,12 +50,13 @@ export var WEAPONS = [
         elevationPrecision: 1,
         minDistance: 0,
         moa: 300,
-        explosionDamage: 0,
-        explosionRadius: [0, 0],
-        damageFallOff: 0,
+        explosionDamage: 115,
+        explosionRadius: [5, 18],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
     },
     {
-        name: "Hell Cannon",
+        name: "HellCannon",
         initialVelocity: 95,
         deceleration: 0,
         decelerationTime : 0,
@@ -70,14 +73,14 @@ export var WEAPONS = [
         moa: 100,
         explosionDamage: 125,
         explosionRadius: [1, 50],
+        explosionDistanceFromImpact: 2,
         damageFallOff: 1,
     },
     {
-        name: "Tech. Mortar",
+        name: "Tech.Mortar",
         initialVelocity: 110,
         deceleration: 0,
-        decelerationTime : 0,
-        gravityScale: 1,
+        decelerationTime : 0,        gravityScale: 1,
         minElevation: [-45, 135],
         unit: "deg",
         logo: technicalLogo,
@@ -90,10 +93,11 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 350,
         explosionRadius: [0, 40],
+        explosionDistanceFromImpact: 0.5,
         damageFallOff: 7,
     },
     {
-        name: "Tech. UB-32",
+        name: "Tech.UB-32",
         initialVelocity: 300,
         deceleration: 0,
         decelerationTime : 0,
@@ -108,12 +112,13 @@ export var WEAPONS = [
         elevationPrecision: 1,
         minDistance: 0,
         moa: 300,
-        explosionDamage: 0,
-        explosionRadius: [0, 0],
-        damageFallOff: 0,
+        explosionDamage: 115,
+        explosionRadius: [5, 18],
+        explosionDistanceFromImpact: 0.2,
+        damageFallOff: 1,
     },
     {
-        name: "BM-21 Grad",
+        name: "BM-21Grad",
         initialVelocity: 200,
         deceleration: 0,
         decelerationTime : 0,
@@ -130,10 +135,11 @@ export var WEAPONS = [
         moa: 200,
         explosionDamage: 140,
         explosionRadius: [1, 35],
+        explosionDistanceFromImpact: 2,
         damageFallOff: 1,
     },
     {
-        name: "M1064 M121",
+        name: "M1064M121",
         initialVelocity: 142,
         deceleration: 0,
         decelerationTime : 0,
@@ -150,6 +156,22 @@ export var WEAPONS = [
         moa: 50,
         explosionDamage: 100,
         explosionRadius: [10, 60],
+        explosionDistanceFromImpact: 10,
         damageFallOff: 1.3,
+        shells : [{
+            moa: 40,
+            explosionDamage: 400,
+            explosionRadius: [0, 40],
+            explosionDistanceFromImpact: 1,
+            damageFallOff: 7,
+        },
+        {
+            moa: 50,
+            explosionDamage: 100,
+            explosionRadius: [10, 60],
+            explosionDistanceFromImpact: 10,
+            damageFallOff: 1.3,
+        },
+        ]
     }    
 ];

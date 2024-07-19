@@ -1,11 +1,11 @@
 import { App } from "./conf";
 
 export class Weapon {
-    constructor(name, initialVelocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, falloff) {
-        this.name = name;
+    constructor(name, initialVelocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, distanceFromImpact, falloff, shells = []) {
         this.initialVelocity = initialVelocity;
         this.deceleration = deceleration;
         this.decelerationTime = decelerationTime;
+        this.name = name;
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
@@ -18,8 +18,9 @@ export class Weapon {
         this.minDistance = minDistance;
         this.moa = moa;
         this.maxDistance = this.getMaxDistance();
-        this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, 100);
-        this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, 25);
+        this.hundredDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 100);
+        this.twentyFiveDamageRadius = this.calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, 25);
+        this.shells = shells;
     }
 
     /**
@@ -76,7 +77,7 @@ export class Weapon {
     calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
         var characterSize = 1.8;
         var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
-        return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2) + Math.pow(radius, 2));
+        return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2 ) + Math.pow(radius, 2));
     }
 
 }

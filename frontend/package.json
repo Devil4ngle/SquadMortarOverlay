@@ -1,6 +1,6 @@
 {
   "name": "squadcalc",
-  "version": "25.0.3",
+  "version": "28.0.0",
   "description": "A Complete Mortar Calculator for Squad",
   "license": "MIT",
   "keywords": [
@@ -41,6 +41,8 @@
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.3",
     "htmlhint": "^1.1.4",
+    "i18next": "^23.11.5",
+    "i18next-http-backend": "^2.5.2",
     "jshint": "^2.13.6",
     "leader-line-new": "^1.1.9",
     "leaflet": "^1.9.4",
@@ -66,7 +68,10 @@
     "webpack-jquery-ui": "^2.0.1",
     "webpack-merge": "^5.8.0",
     "webpack-nano": "^1.1.1",
-    "webpack-pwa-manifest": "^4.0.0",
+    "webpack-pwa-manifest": "^4.3.0",
     "workbox-webpack-plugin": "^7.0.0"
+  },
+  "dependencies": {
+
   }
 }

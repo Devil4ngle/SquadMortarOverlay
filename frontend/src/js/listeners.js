@@ -1,16 +1,20 @@
 import { shoot, filterInput, resizeInput, resizeInputsOnResize, RemoveSaves, copySave, copyCalc, saveCalc, changeHighLow,  } from "./utils";
-import { changeWeapon, switchUI } from "../app"; 
+import { changeWeapon, changeShell, switchUI, } from "../app"; 
 import { App } from "./conf";
 import { MAPS } from "../data/maps";
+import { updatePreview } from "./settings";
 
+$(document).on("change", ".dropbtn3", function() { 
+    changeShell(this.value);
+    App.minimap.updateTargets();
+});
 $(document).on("change", ".dropbtn2", function() { changeWeapon(); });
 $(document).on("change", ".dropbtn", function() {
     App.minimap.activeMap = MAPS.find((elem, index) => index == this.value);
     App.minimap.clear(); 
     App.minimap.draw(true); 
     App.minimap.changeLayer();
-    App.minimap.setZoom(4);
-});
+    App.minimap.setZoom(4);});
 
 $(document).on("input", "#mortar-location", function() { shoot("weapon"); });
 $(document).on("input", "#target-location", function() { shoot("target"); });
@@ -24,10 +28,13 @@ $(document).on("click", ".savespan", function() { copySave($(this)); });
 
 $(document).on("click", "#savebutton", function() { saveCalc(); });
 $(document).on("click", "#copy", function(e) { copyCalc(e); });
-$(document).on("click", "#highlow", function() { changeHighLow(); });
+$(document).on("click", "#highlow .active", function() { changeHighLow(); });
 $(document).on("click", function(event) {if (!$(event.target).closest(".fab-wrapper").length) {$("#fabCheckbox").prop("checked", false);}});
 $(document).on("click", "#fabCheckbox2", function() {switchUI();});
-$(document).on("click", "#fabCheckbox", function() {$("#helpDialog")[0].showModal();});
+$(document).on("click", "#fabCheckbox", function() {
+    updatePreview();
+    $("#helpDialog")[0].showModal();
+});
 $(document).on("click", ".btn-delete", function() { App.minimap.deleteTargets();});
 
 $(window).on("resize", function() { resizeInputsOnResize(); });

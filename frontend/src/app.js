@@ -5,7 +5,8 @@ import "select2/dist/css/select2.min.css";
 import "select2/dist/js/select2.min.js";
 import "animate.css";
 import "leaflet/dist/leaflet.css";
-//import "leaflet/dist/images/marker-shadow.png"; // fix
+
+
 
 // Local styles
 import "./css/styles.scss";
@@ -15,15 +16,17 @@ import "./css/responsive.scss";
 import { App } from "./js/conf.js";
 import { MAPS } from "./data/maps.js";
 import { squadMinimap } from "./js/squadMinimap.js";
-import { Weapon } from "./js/weapons.js";
+import { Weapon } from "./js/squadWeapons.js";
 import { WEAPONS, WEAPONSTYPE } from "./data/weapons.js";
 import { shoot } from "./js/utils.js";
 import { createLine, drawLine } from "./js/animations";
 import { loadSettings } from "./js/settings.js";
 import packageInfo from "../package.json";
 import "./js/listeners.js";
+import { loadLanguage } from "./js/localization.js";
 
 $(function() {
+    loadLanguage();
     loadSettings();
     createLine();
     loadMapSelector();
@@ -153,7 +156,7 @@ function loadMapSelector() {
     
     // load maps into select2
     MAPS.forEach(function(map, i) {
-        MAP_SELECTOR.append("<option value=\"" + i + "\">" + map.name + "</option>");
+        MAP_SELECTOR.append("<option data-i18n=maps:" +  map.name + " value=\"" + i + "\"></option>");
     });
 
 }
@@ -173,6 +176,7 @@ function loadMinimap(){
 export function loadWeapons() {
     const WEAPONSLENGTH = WEAPONS.length;
     const WEAPON_SELECTOR = $(".dropbtn2");
+    const SHELL_SELECTOR = $(".dropbtn3");
 
     WEAPONS.forEach((weapon, index, arr) => {
         arr[index] = new Weapon(
@@ -194,7 +198,9 @@ export function loadWeapons() {
             weapon.explosionDamage,
             weapon.explosionRadius[0],
             weapon.explosionRadius[1],
-            weapon.damageFallOff
+            weapon.explosionDistanceFromImpact,
+            weapon.damageFallOff,
+            weapon.shells
         );
     });
     
@@ -205,11 +211,21 @@ export function loadWeapons() {
         placeholder: "SELECT A WEAPON"
     });
 
+
+    SHELL_SELECTOR.select2({
+        dropdownCssClass: "dropbtn3",
+        dropdownParent: $("#ammoSelector"),
+        minimumResultsForSearch: -1, // Disable search
+        placeholder: "SELECT A WEAPON"
+    });
+
+    
+
     for (let i = 0; i < WEAPONSTYPE.length; i += 1) {
-        WEAPON_SELECTOR.append("<optgroup label=\"" + WEAPONSTYPE[i] + "\">");
+        WEAPON_SELECTOR.append("<optgroup data-i18n-label=\"weapons:" + WEAPONSTYPE[i] + "\">");
         for (let y = 0; y < WEAPONSLENGTH; y += 1) {
             if (WEAPONS[y].type === WEAPONSTYPE[i]) {
-                WEAPON_SELECTOR.append("<option value=\"" + y + "\">" + WEAPONS[y].name + "</option>");
+                WEAPON_SELECTOR.append("<option data-i18n=weapons:" + WEAPONS[y].name + " value=\"" + y + "\"></option>");
             }
         }
         WEAPON_SELECTOR.append("</optgroup>");
@@ -256,11 +272,19 @@ function getWeapon() {
  * save current weapon into browser cache
  */
 export function changeWeapon() {
-    const weapon = $(".dropbtn2").val();
+    const WEAPON = $(".dropbtn2").val();
 
     App.line.hide("none");
-    localStorage.setItem("data-weapon", weapon);
-    App.activeWeapon = WEAPONS[weapon];
+    localStorage.setItem("data-weapon", WEAPON);
+    App.activeWeapon = WEAPONS[WEAPON];
+
+    if (WEAPON == 6) {
+        $("#ammoSelector").show();
+        changeShell($(".dropbtn3").val());
+    } else {
+        $("#ammoSelector").hide();
+    }
+
     $("#mortarImg").attr("src", App.activeWeapon.logo);
     shoot();
 
@@ -269,6 +293,28 @@ export function changeWeapon() {
     // Update Minimap marker
     App.minimap.updateWeapons();
     App.minimap.updateTargets();
+}
+
+export function changeShell(shell){
+
+    if ($(".dropbtn2").val() != 6) { return;}
+
+    App.activeWeapon.moa = WEAPONS[6].shells[shell].moa;
+    App.activeWeapon.hundredDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+        WEAPONS[6].shells[shell].explosionDamage,
+        WEAPONS[6].shells[shell].explosionRadius[0],
+        WEAPONS[6].shells[shell].explosionRadius[1],
+        WEAPONS[6].shells[shell].damageFallOff,
+        WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+        100);
+
+    App.activeWeapon.twentyFiveDamageRadius = App.activeWeapon.calculateDistanceForDamage(
+        WEAPONS[6].shells[shell].explosionDamage,
+        WEAPONS[6].shells[shell].explosionRadius[0],
+        WEAPONS[6].shells[shell].explosionRadius[1],
+        WEAPONS[6].shells[shell].damageFallOff,
+        WEAPONS[6].shells[shell].explosionDistanceFromImpact, 
+        25);
 }
 
 function loadMapUIMode(){
@@ -307,3 +353,14 @@ export function switchUI(){
         drawLine();
     }
 }
+
+
+
+
+
+
+$(".dropbtn4").select2({
+    dropdownCssClass: "dropbtn4",
+    dropdownParent: $("#helpDialog"),
+    minimumResultsForSearch: -1, // Disable search
+});
