@@ -322,11 +322,9 @@ export var squadWeaponMarker = squadMarker.extend({
             $("#angleChoice").show();
         }
 
-        if (App.activeWeapon.name === "UB-32" || App.activeWeapon.name === "Tech. UB-32") {
-            $(".infVelocity").first().text("300m/s");
-        } else {
-            $(".infVelocity").first().text(App.activeWeapon.velocity + "m/s");
-        }
+      
+        $(".infVelocity").first().text(App.activeWeapon.initialVelocity + "m/s");
+        
 
         // Angle
         if (this.angleType ==="high"){

@@ -177,7 +177,9 @@ export function loadWeapons() {
     WEAPONS.forEach((weapon, index, arr) => {
         arr[index] = new Weapon(
             weapon.name,
-            weapon.velocity,
+            weapon.initialVelocity,
+            weapon.deceleration,
+            weapon.decelerationTime ,
             weapon.gravityScale,
             weapon.minElevation,
             weapon.unit,

@@ -1,15 +1,11 @@
 import { App } from "./conf";
-import { UB32Weapon } from "./ub32";
 
 export class Weapon {
-    constructor(name, velocity, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, falloff) {
+    constructor(name, initialVelocity, deceleration, decelerationTime, gravityScale, minElevation, unit, logo, marker, logoCannonPos, type, angleType, elevationPrecision, minDistance, moa, maxDamage, startRadius, endRadius, falloff) {
         this.name = name;
-        if (name === "UB-32") {
-            this.ub32 = new UB32Weapon();
-            this.velocity = velocity;
-        } else {
-            this.velocity = velocity;
-        }
+        this.initialVelocity = initialVelocity;
+        this.deceleration = deceleration;
+        this.decelerationTime = decelerationTime;
         this.gravityScale = gravityScale;
         this.minElevation = minElevation;
         this.unit = unit;
@@ -27,16 +23,37 @@ export class Weapon {
     }
 
     /**
-     * Return the weapon velocity
-     * @param {number} } [distance] - distance between mortar and target from getDist()
-     * @returns {number} - Velocity of the weapon for said distance
-     */
-    getVelocity(distance) {
-        if (this.name === "UB-32") {
-            return this.ub32.getVelocity(distance);
-        }
-        return this.velocity; // For other weapons
+       * Return the weapon velocity
+       * @param {number} } [distance] - distance between mortar and target from getDist()
+       * @returns {number} - Velocity of the weapon for said distance
+    */
+
+    
+getVelocity(distance) {
+    if (this.deceleration === 0 || this.decelerationTime === 0) {
+        return this.initialVelocity;
     }
+    const acceleration = -this.decelerationTime 
+    // Calculate the distance traveled during deceleration
+    const decelerationDistance = this.initialVelocity * acceleration +
+        0.5 * this.deceleration * Math.pow(acceleration, 2);
+
+    if (distance <= decelerationDistance) {
+        // The projectile is still in the deceleration phase
+        const t = Math.sqrt((2 * distance) /
+            (2 * this.initialVelocity + this.deceleration * acceleration));
+        return this.initialVelocity + this.deceleration * t;
+    } else {
+        // The projectile has finished decelerating
+        const finalVelocity = this.initialVelocity + this.deceleration * acceleration;
+        const timeAfterDeceleration = (distance - decelerationDistance) / finalVelocity;
+        const totalTime = acceleration + timeAfterDeceleration;
+        let retura = distance / totalTime;
+        debugger;
+        // Use the projectile motion equation to calculate the average velocity
+        return distance / totalTime;
+    }
+}
 
     /**
      * Return the angle factor from 45°
@@ -53,16 +70,13 @@ export class Weapon {
      * @returns {number} [distance]
      */
     getMaxDistance() {
-        if (this.velocity.constructor != Array) {
-            return (this.velocity ** 2) / App.gravity / this.gravityScale;
-        }
-
-        // When using UB32, return last value from UB32_table
-        return this.velocity.slice(-1)[0][0];
+        return (this.initialVelocity ** 2) / App.gravity / this.gravityScale;
     }
 
-    calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, targetDamage) {
-        return endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
+    calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
+        var characterSize = 1.8;
+        var radius = endRadius - (Math.pow(targetDamage / maxDamage, 1 / falloff) * (endRadius - startRadius));
+        return Math.sqrt(-Math.pow(distanceFromImpact - characterSize, 2) + Math.pow(radius, 2));
     }
 
 }

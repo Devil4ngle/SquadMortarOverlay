@@ -41,7 +41,9 @@ export const WEAPONSTYPE = ["deployables", "vehicles",];
 export var WEAPONS = [
     {
         name: "Mortar",
-        velocity: 110,
+        initialVelocity: 110,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 1,
         minElevation: [800, 1579],
         unit: "mil",
@@ -59,7 +61,9 @@ export var WEAPONS = [
     },
     {
         name: "UB-32",
-        velocity: UB32_table,
+        initialVelocity: 300,
+        deceleration: 50,
+        decelerationTime : 2,
         gravityScale: 2,
         minElevation: [-25, 35],
         unit: "deg",
@@ -77,7 +81,9 @@ export var WEAPONS = [
     },
     {
         name: "Hell Cannon",
-        velocity: 95,
+        initialVelocity: 95,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 1,
         minElevation: [10, 85],
         unit: "deg",
@@ -95,7 +101,9 @@ export var WEAPONS = [
     },
     {
         name: "Tech. Mortar",
-        velocity: 110,
+        initialVelocity: 110,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 1,
         minElevation: [-45, 135],
         unit: "deg",
@@ -113,7 +121,9 @@ export var WEAPONS = [
     },
     {
         name: "Tech. UB-32",
-        velocity: UB32_table,
+        initialVelocity: 300,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
@@ -131,7 +141,9 @@ export var WEAPONS = [
     },
     {
         name: "BM-21 Grad",
-        velocity: 200,
+        initialVelocity: 200,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 2,
         minElevation: [-45, 135],
         unit: "deg",
@@ -149,7 +161,9 @@ export var WEAPONS = [
     },
     {
         name: "M1064 M121",
-        velocity: 142,
+        initialVelocity: 142,
+        deceleration: 0,
+        decelerationTime : 0,
         gravityScale: 1,
         minElevation: [45, 85.3],
         unit: "deg",
