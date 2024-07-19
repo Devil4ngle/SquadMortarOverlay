@@ -6,35 +6,8 @@ import mlrsLogo from "../img/icons/mlrs_white.png";
 import ub32Logo from "../img/icons/ub32_white.png";
 import m113Logo from "../img/icons/m113a3_white.png";
 /* eslint no-unused-vars: "off" */
-import target from "../img/icons/target.png";
 
 import { mortarIcon, hellIcon, ub32Icon, tMortarIcon, tub32Icon, gradIcon, m121Icon} from "../js/squadIcon";
-
-const UB32_table = [
-    [100,  334.7778886114855],
-    [200, 305.6459342280165],
-    [300, 283.0585190456855],
-    [400, 269.15585935988156],
-    [500, 268.4445467197605],
-    [600, 241.58938992870094],
-    [700, 230.00396877923583],
-    [800, 227.48886673532039],
-    [900, 226.87144522938755],
-    [1000, 219.29451804327465],
-    [1100, 217.69947684093455],
-    [1200, 213.47910836403614],
-    [1300, 217.24714731055712],
-    [1400, 215.84356249799185],
-    [1500, 213.64675771020842],
-    [1600, 210.37877185692568],
-    [1700, 208.344434014631],
-    [1800, 207.3186719065925],
-    [1900, 207.57652270427334],
-    [2000, 208.62643147834694],
-    [2050, 206.18365942119797],
-    [2100, 205.6621778109742],
-    [2143, 204.87704785305388],
-];
 
 export const WEAPONSTYPE = ["deployables", "vehicles",];
 
@@ -61,7 +34,7 @@ export var WEAPONS = [
     },
     {
         name: "UB-32",
-        initialVelocity: 300,
+        initialVelocity: 298,
         deceleration: 50,
         decelerationTime : 2,
         gravityScale: 2,

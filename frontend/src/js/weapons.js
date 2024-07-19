@@ -29,29 +29,27 @@ export class Weapon {
     */
 
     
-getVelocity(distance) {
-    if (this.deceleration === 0 || this.decelerationTime === 0) {
-        return this.initialVelocity;
-    }
-    const acceleration = -this.decelerationTime 
-    // Calculate the distance traveled during deceleration
-    const decelerationDistance = this.initialVelocity * acceleration +
-        0.5 * this.deceleration * Math.pow(acceleration, 2);
+    getVelocity(distance) {
+        if (this.deceleration === 0 || this.decelerationTime === 0) {
+            return this.initialVelocity;
+        }
 
-    if (distance <= decelerationDistance) {
-        // The projectile is still in the deceleration phase
-        const t = Math.sqrt((2 * distance) /
-            (2 * this.initialVelocity + this.deceleration * acceleration));
-        return this.initialVelocity + this.deceleration * t;
-    } else {
-        // The projectile has finished decelerating
-        const finalVelocity = this.initialVelocity + this.deceleration * acceleration;
-        const timeAfterDeceleration = (distance - decelerationDistance) / finalVelocity;
-        const totalTime = acceleration + timeAfterDeceleration;
-        // Use the projectile motion equation to calculate the average velocity
-        return distance / totalTime;
+        const decelerationDistance = this.initialVelocity * this.decelerationTime -
+            0.5 * this.deceleration * Math.pow(this.decelerationTime, 2);
+
+        if (distance <= decelerationDistance) {
+            // The projectile is still in the deceleration phase
+            const t = (-this.initialVelocity + Math.sqrt(Math.pow(this.initialVelocity, 2) + 2 * this.deceleration * distance)) / this.deceleration;
+            return this.initialVelocity - this.deceleration * t;
+        } else {
+            // The projectile has finished decelerating
+            const finalVelocity = this.initialVelocity - this.deceleration * this.decelerationTime;
+            const timeAfterDeceleration = (distance - decelerationDistance) / finalVelocity;
+            const totalTime = this.decelerationTime + timeAfterDeceleration;
+            // Calculate the average velocity
+            return distance / totalTime;
+        }
     }
-}
 
     /**
      * Return the angle factor from 45°
@@ -68,7 +66,11 @@ getVelocity(distance) {
      * @returns {number} [distance]
      */
     getMaxDistance() {
-        return (this.initialVelocity ** 2) / App.gravity / this.gravityScale;
+        if (this.deceleration === 0 || this.decelerationTime === 0) {
+            return (this.initialVelocity ** 2) / App.gravity / this.gravityScale;
+        }
+        const finalVelocity = this.initialVelocity - this.deceleration * this.decelerationTime;
+        return (finalVelocity ** 2) / App.gravity / this.gravityScale;
     }
 
     calculateDistanceForDamage(maxDamage, startRadius, endRadius, falloff, distanceFromImpact, targetDamage) {
