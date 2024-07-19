@@ -32,7 +32,6 @@ export default class SquadFiringSolution {
         this.timeOfFlight = {low: [], high: []};
         this.timeOfFlight.low = this.getTimeOfFlight(this.elevation.low.rad, this.velocity, this.heightDiff);
         this.timeOfFlight.high = this.getTimeOfFlight(this.elevation.high.rad, this.velocity, this.heightDiff);
-        debugger;
     }
 
 

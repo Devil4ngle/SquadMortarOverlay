@@ -48,8 +48,6 @@ getVelocity(distance) {
         const finalVelocity = this.initialVelocity + this.deceleration * acceleration;
         const timeAfterDeceleration = (distance - decelerationDistance) / finalVelocity;
         const totalTime = acceleration + timeAfterDeceleration;
-        let retura = distance / totalTime;
-        debugger;
         // Use the projectile motion equation to calculate the average velocity
         return distance / totalTime;
     }
