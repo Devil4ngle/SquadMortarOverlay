@@ -177,7 +177,7 @@ text.pack(expand=True, fill=tk.BOTH)
 
 # Define button click events
 def open_github():
-    webbrowser.open("https://github.com/Devil4ngle/squadmortar")
+    webbrowser.open("https://github.com/Devil4ngle/SquadMortarOverlay")
 
 
 def open_discord():
@@ -219,7 +219,7 @@ def ask_coordinates():
 
 
 def check_version():
-    api_url = "https://api.github.com/repos/Devil4ngle/squadmortar/releases/latest"
+    api_url = "https://api.github.com/repos/Devil4ngle/SquadMortarOverlay/releases/latest"
     try:
         response = requests.get(api_url)
         response_json = response.json()
@@ -232,7 +232,7 @@ def check_version():
                 "Update available",
                 f"Latest version: {latest_version}. Download the latest version.",
             )
-            webbrowser.open("https://github.com/Devil4ngle/squadmortar/releases")
+            webbrowser.open("https://github.com/Devil4ngle/SquadMortarOverlay/releases")
     except Exception as e:
         messagebox.showerror(
             "Error", f"An error occurred while checking for updates: {str(e)}"
