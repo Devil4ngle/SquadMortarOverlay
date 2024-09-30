@@ -7,7 +7,7 @@
 ![image](https://github.com/Devil4ngle/SquadMortarOverlay/assets/101042789/34f153d2-f65e-4a15-89bc-21046b297dad)
 
 ## How to make it run?
-1. Go to [https://github.com/Devil4ngle/squadmortar/releases](https://github.com/Devil4ngle/SquadMortarOverlay/releases).
+1. Go to [https://github.com/Devil4ngle/SquadMortarOverlay/releases](https://github.com/Devil4ngle/SquadMortarOverlay/releases).
 2. Download `squadMortarOverlay.exe`.
 3. Run `squadMortarOverlay.exe`.
 ![image](https://github.com/Devil4ngle/SquadMortarOverlay/assets/101042789/2debdd3f-e5a2-4f13-9a59-fb48c6bd3b72)
