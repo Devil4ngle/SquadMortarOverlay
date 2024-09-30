@@ -15,7 +15,7 @@
 
 
 ## Supported Screen Sizes
-1920x1080, 2560x1440, 3840x2160
+1920x1080, 2560x1080, 2560x1440 3840x2160
 
 ## Unsupported Screen Size
 If your screen size is not supported, please join Discord so I will add it: 
@@ -29,6 +29,11 @@ The website is derived from the GitHub repository
 [SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc), and the original website can be found at [SquadCalc](https://squadcalc.app/). 
 
 Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the help with SquadCalc throughout the development of this project.
+
+ ## Note
+ - The frontend site of the project can be found on [here](https://github.com/sh4rkman/SquadCalc/blob/master/src/js/squadCalcAPI.js).
+- Brave browser doesn't work with the Overlay
+
 
 ---
 

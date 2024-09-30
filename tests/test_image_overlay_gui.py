@@ -36,8 +36,7 @@ for screenshot_name, map_name in map_locations.items():
     img1_path = os.path.join(screenshots_base_path, screenshot_name + ".png")
     img1 = cv2.imread(img1_path)
     if img1 is not None:
-        for map_type in ["basemap"]:  # You can add "terrainmap", "topomap" as needed
-            img2_path = Path(maps_base_path) / map_name / map_type / "0.webp"
+            img2_path = Path(maps_base_path) / map_name  / "basemap.webp"
             if img2_path.exists():
                 img2 = cv2.imread(str(img2_path))
                 if img2 is not None:

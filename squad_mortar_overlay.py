@@ -26,7 +26,7 @@ DEFAULT_CONFIG = {
 CONFIG_FILE_PATH = "config/config.json"
 
 TEXT_CONTENT = """ When this application is started, 
- https://devil4ngle.github.io/squadmortar/ (SquadCalc) needs to be
+ https://squadcalc.app/ (SquadCalc) needs to be
  refreshed if already open.
 
  
@@ -158,7 +158,7 @@ try:
     icon_path = "favicon.ico"
     base_path = sys._MEIPASS
 except Exception:
-    icon_path = "frontend/src/img/favicons/favicon.ico"
+    icon_path = "favicon.ico"
     base_path = os.path.abspath(".")
 iconPath = os.path.join(base_path, icon_path)
 
@@ -185,8 +185,7 @@ def open_discord():
 
 
 def open_html():
-    webbrowser.open("https://devil4ngle.github.io/squadmortar/")
-
+    webbrowser.open("https://squadcalc.app/")
 
 def ask_font_size():
     font_size = simpledialog.askinteger("Input", "Enter the Font Size:", parent=root)
