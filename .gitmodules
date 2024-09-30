@@ -1,0 +1,3 @@
+[submodule "frontend/SquadCalc"]
+	path = frontend/SquadCalc
+	url = https://github.com/sh4rkman/SquadCalc.git
