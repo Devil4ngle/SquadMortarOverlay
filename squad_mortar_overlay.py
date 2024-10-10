@@ -13,7 +13,7 @@ from scripts.image_layering import overlay_images
 from tkinter import messagebox
 import requests
 
-VERSION = "2.3.1"
+VERSION = "2.3.2"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
