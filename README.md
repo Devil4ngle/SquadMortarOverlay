@@ -15,7 +15,7 @@
 
 
 ## Supported Screen Sizes
-1920x1080, 2560x1080, 2560x1440 3840x2160
+1920x1080, 1920x1200, 2560x1080, 2560x1440, 2560x1600 3840x2160
 
 ## Unsupported Screen Size
 If your screen size is not supported, please join Discord so I will add it: 

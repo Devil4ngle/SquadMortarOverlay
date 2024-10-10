@@ -19,8 +19,9 @@ def capture_screenshot():
     coordinates = {
         "2560x1440": {"mapCoordinates": [1001, 136, 2278, 1412]},
         "1920x1080": {"mapCoordinates": [751, 102, 1708, 1059]},
-        "1920x1200": {"mapCoordinates": [751, 102, 1708, 1059]},
+        "1920x1200": {"mapCoordinates": [728, 113, 1791, 1177]},
         "2560x1080": {"mapCoordinates": [1071, 102, 2028, 1059]},
+        "2560x1600": {"mapCoordinates": [970, 151, 2389, 1569]},
         "3840x2160": {"mapCoordinates": [1502, 204, 3417, 2119]},
     }
     # Use coordinates based on the game resolution
