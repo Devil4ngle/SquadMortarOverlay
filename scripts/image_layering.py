@@ -36,10 +36,9 @@ def capture_screenshot():
     return cropped_image
 
 
-def overlay_images(image_data):
-    zoomed_in_image = capture_screenshot()
+def overlay_images(image_data,zoomed_in_image):
     clean_minimap = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
-    downscale_factor = 0.4 
+    downscale_factor = 0.8 
     clean_minimap_small = cv2.resize(clean_minimap, None, fx=downscale_factor, fy=downscale_factor, interpolation=cv2.INTER_LINEAR)
 
     # Feature detection and description on downscaled clean_minimap

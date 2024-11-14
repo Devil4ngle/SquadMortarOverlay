@@ -9,11 +9,11 @@ import websockets
 from websockets.server import serve
 from tkinter import simpledialog
 import json
-from scripts.image_layering import overlay_images
+from scripts.image_layering import capture_screenshot, overlay_images
 from tkinter import messagebox
 import requests
 
-VERSION = "2.3.2"
+VERSION = "2.3.3"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
@@ -25,11 +25,7 @@ DEFAULT_CONFIG = {
 
 CONFIG_FILE_PATH = "config/config.json"
 
-TEXT_CONTENT = """ When this application is started, 
- https://squadcalc.app/ (SquadCalc) needs to be
- refreshed if already open.
-
- 
+TEXT_CONTENT = """
  When changing settings they will be applied upon 
  adding new mortar points on (SquadCalc).
 
@@ -77,9 +73,10 @@ async def handle_map(websocket):
     await websocket.send("Open")
     while True:
         if keyboard.is_pressed(settings["hotkey"]):
+            zoomed_in_image = capture_screenshot()
             await websocket.send("Map")
             image_data = await websocket.recv()
-            modified_image_data = overlay_images(image_data)
+            modified_image_data = overlay_images(image_data,zoomed_in_image)
             await websocket.send(modified_image_data)
             await asyncio.sleep(0.5)
         await asyncio.sleep(0.1)
@@ -152,7 +149,6 @@ websocket_thread_coordinates.start()
 
 # GUI Part
 root = tk.Tk()
-root.geometry("560x300")
 
 try:
     icon_path = "favicon.ico"
