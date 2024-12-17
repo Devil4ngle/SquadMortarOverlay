@@ -32,7 +32,7 @@ The source code can be found at [SquadCalc GitHub](https://github.com/sh4rkman/S
 Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the help with  SquadCalc throughout the development of this project.
 
  ## Note
- - The frontend site of the project can be found on [here](https://github.com/sh4rkman/SquadCalc/blob/master/src/js/smcConnector.js).
+ - The frontend site of the project can be found on [SquadCalc->smcConnector.js](https://github.com/sh4rkman/SquadCalc/blob/master/src/js/smcConnector.js).
 - Brave browser doesn't work with the Overlay
 
 
