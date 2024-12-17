@@ -22,16 +22,17 @@ If your screen size is not supported, please join Discord so I will add it:
 [Squadmortar Overlay Discord](https://discord.gg/Qc5y4satdz).
 
 ## Will this program get you banned?
-No, it will not get you banned. It only takes a screenshot of the screen and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
+No, it will not get you banned. It only takes a screenshot of the screen [(look here)](https://github.com/Devil4ngle/SquadMortarOverlay/blob/main/scripts/image_layering.py) and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
 
 ## Credits
-The website is derived from the GitHub repository 
-[SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc), and the original website can be found at [SquadCalc](https://squadcalc.app/). 
+This project uses [SquadCalc](https://squadcalc.app/), created by [@sh4rkman](https://github.com/sh4rkman). 
 
-Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the help with SquadCalc throughout the development of this project.
+The source code can be found at [SquadCalc GitHub](https://github.com/sh4rkman/SquadCalc).
+
+Special thanks to  [@sh4rkman](https://github.com/sh4rkman) for not only creating the original SquadCalc but also for the help with  SquadCalc throughout the development of this project.
 
  ## Note
- - The frontend site of the project can be found on [here](https://github.com/sh4rkman/SquadCalc/blob/master/src/js/squadCalcAPI.js).
+ - The frontend site of the project can be found on [here](https://github.com/sh4rkman/SquadCalc/blob/master/src/js/smcConnector.js).
 - Brave browser doesn't work with the Overlay
 
 
