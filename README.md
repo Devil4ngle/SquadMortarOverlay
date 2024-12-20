@@ -22,7 +22,16 @@ If your screen size is not supported, please join Discord so I will add it:
 [Squadmortar Overlay Discord](https://discord.gg/Qc5y4satdz).
 
 ## Will this program get you banned?
-No, it will not get you banned. It only takes a screenshot of the screen [(look here)](https://github.com/Devil4ngle/SquadMortarOverlay/blob/main/scripts/image_layering.py) and does not interact with Squad in any way. Additionally, it does not use AI or any similar technology. The code is open source and can be checked for assurance.
+No, this program won't get you banned. Here's why it's completely safe:
+
+The program is just a transparent window that sits on top of your screen, similar to having a calculator window open. It never interacts with Squad in any way - it doesn't inject code, read memory, or send inputs/keystrokes to the game. 
+
+Looking at the code:
+- It only takes screenshots of what's already on your screen using pyautogui.screenshot() in image_layering.py [(look here)](https://github.com/Devil4ngle/SquadMortarOverlay/blob/main/scripts/image_layering.py) - no different than using Windows' built-in screenshot tools like PrintScreen or Snipping Tool
+
+- Creates a transparent overlay window using standard Windows functionality (tkinter)
+
+This program simply displays the same information that SquadCalc provides in a different format. According to the definition of cheating - "using a third party tool to gain an unfair advantage" - SquadCalc is technically cheating since it provides advantages through automated calculations. However, all players don't view it as such and it's widely accepted as a legitimate tool, and that's why this program is completely fine too.
 
 ## Credits
 This project uses [SquadCalc](https://squadcalc.app/), created by [@sh4rkman](https://github.com/sh4rkman). 
