@@ -24,6 +24,7 @@ frontend/public/app.js.LICENSE.txt
 visual.au3
 language-server-log.txt
 config/config.json
+config/images
 squadMortarOverlay.exe
 squadMortarOverlay.spec
 build

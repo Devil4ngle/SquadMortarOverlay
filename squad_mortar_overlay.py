@@ -9,11 +9,11 @@ import websockets
 from websockets.server import serve
 from tkinter import simpledialog
 import json
-from scripts.image_layering import capture_screenshot, overlay_images
+from scripts.image_layering import capture_screenshot, overlay_images , get_cached_image
 from tkinter import messagebox
 import requests
 
-VERSION = "2.3.4"
+VERSION = "2.4.0"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
@@ -24,6 +24,7 @@ DEFAULT_CONFIG = {
 }
 
 CONFIG_FILE_PATH = "config/config.json"
+CONFIG_DIR = "config"
 
 TEXT_CONTENT = """
  When changing settings they will be applied upon 
@@ -34,9 +35,19 @@ TEXT_CONTENT = """
  open (the Capslock one) with the side bar open. 
  Fully zoomed in screenshot on the Minimap might fail."""
 
+# Hotkey event
+last_key_pressed = None
+
+def on_key_press(event):
+    global last_key_pressed
+    last_key_pressed = event.name
+
+keyboard.on_press(on_key_press)
+
+
 # Create config directory if it does not exist
-if not os.path.exists("config"):
-    os.makedirs("config")
+if not os.path.exists(CONFIG_DIR):
+    os.makedirs(CONFIG_DIR)
 
 # Save config
 if not os.path.exists(CONFIG_FILE_PATH):
@@ -68,19 +79,40 @@ settings = {
 }
 
 
-# WebSocket Part
 async def handle_map(websocket):
     await websocket.send("Open")
+    global last_key_pressed
+    current_map_name = None
+    
     while True:
-        if keyboard.is_pressed(settings["hotkey"]):
+        if last_key_pressed == settings["hotkey"]:
+            # Reset hotkey
+            last_key_pressed = None
+            
+            # Capture screen
             zoomed_in_image = capture_screenshot()
+            
+            # Get map name
             await websocket.send("Map")
-            image_data = await websocket.recv()
-            modified_image_data = overlay_images(image_data,zoomed_in_image)
+            new_map_name = await websocket.recv()
+            
+            # Only request image data if map changed or not in cache
+            image_data = None
+            if new_map_name != current_map_name or get_cached_image(new_map_name) is None:
+                await websocket.send("MapData")
+                image_data = await websocket.recv()
+                current_map_name = new_map_name
+            
+            # Process and send image
+            modified_image_data = overlay_images(
+                image_data if image_data is not None else get_cached_image(current_map_name).tobytes(), 
+                zoomed_in_image, 
+                current_map_name
+            )
             await websocket.send(modified_image_data)
+            
             await asyncio.sleep(0.5)
         await asyncio.sleep(0.1)
-
 
 async def handle_coordinates(websocket):
     try:

@@ -1,3 +1,6 @@
 [submodule "frontend/SquadCalc"]
-	path = frontend/SquadCalc
-	url = https://github.com/sh4rkman/SquadCalc.git
+    path = frontend/SquadCalc
+    url = https://github.com/sh4rkman/SquadCalc.git
+    branch = master
+# git submodule update --remote --merge
+
