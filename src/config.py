@@ -3,7 +3,7 @@ import os
 import json
 import sys
 
-VERSION = "2.4.0"
+VERSION = "2.4.1"
 
 DEFAULT_CONFIG = {
     "hotkey": "!",
