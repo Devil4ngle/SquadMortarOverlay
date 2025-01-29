@@ -5,6 +5,7 @@ from websockets.server import serve
 import tkinter as tk
 from image_layering import capture_screenshot, overlay_images, get_cached_image
 import keyboard
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 # Global variable for tracking last key pressed
 last_key_pressed = None
@@ -14,6 +15,25 @@ def on_key_press(event):
     last_key_pressed = event.name
 
 keyboard.on_press(on_key_press)
+
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(b"healthy")
+        else:
+            self.send_response(404)
+            self.end_headers()
+    
+    def log_message(self, format, *args):
+        pass
+
+def start_health_server():
+    server = HTTPServer(('localhost', 12347), HealthCheckHandler)
+    server.serve_forever()
 
 class CoordinateWindow:
     def __init__(self, settings):
@@ -132,7 +152,13 @@ def start_server_loop(server_type, settings):
         loop.run_until_complete(start_coordinate_server())
 
 def start_websocket_servers(settings):
-    """Starts both websocket servers in separate threads"""
+    """Starts websocket servers and health check server in separate threads"""
+    # Start health check HTTP server
+    health_thread = threading.Thread(target=start_health_server)
+    health_thread.daemon = True
+    health_thread.start()
+
+    # Start WebSocket servers
     websocket_thread_map = threading.Thread(
         target=start_server_loop,
         args=("map", settings)
