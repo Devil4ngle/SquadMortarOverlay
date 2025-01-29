@@ -12,6 +12,83 @@ TEXT_CONTENT = """
  open (the Capslock one) with the side bar open. 
  Fully zoomed in screenshot on the Minimap might fail."""
 
+class MapCoordinateSelector:
+    def __init__(self):
+        self.root = tk.Tk()
+        self.root.attributes('-alpha', 0.3)
+        self.root.attributes('-topmost', True)
+        self.root.attributes('-fullscreen', True)
+        
+        # Create transparent canvas
+        self.canvas = tk.Canvas(self.root, highlightthickness=0)
+        self.canvas.pack(fill=tk.BOTH, expand=True)
+        
+        # Variables to store coordinates
+        self.start_x = None
+        self.start_y = None
+        self.current_rect = None
+        
+        # Bind mouse events
+        self.canvas.bind('<Button-1>', self.start_selection)
+        self.canvas.bind('<B1-Motion>', self.update_selection)
+        self.canvas.bind('<ButtonRelease-1>', self.end_selection)
+        
+        # Add instructions label
+        instructions = ("Click and drag to select the map area.\n"
+                       "Press Enter to confirm or Escape to cancel.")
+        self.label = tk.Label(self.root, text=instructions, 
+                            bg='black', fg='white', pady=10)
+        self.label.place(relx=0.5, rely=0.1, anchor='center')
+        
+        # Bind keyboard events
+        self.root.bind('<Return>', self.confirm_selection)
+        self.root.bind('<Escape>', self.cancel_selection)
+        
+        self.coordinates = None
+
+    def start_selection(self, event):
+        self.start_x = event.x
+        self.start_y = event.y
+        if self.current_rect:
+            self.canvas.delete(self.current_rect)
+        self.current_rect = self.canvas.create_rectangle(
+            event.x, event.y, event.x, event.y,
+            outline='red', width=2
+        )
+
+    def update_selection(self, event):
+        if self.current_rect:
+            self.canvas.coords(
+                self.current_rect,
+                self.start_x, self.start_y,
+                event.x, event.y
+            )
+
+    def end_selection(self, event):
+        if self.current_rect:
+            coords = self.canvas.coords(self.current_rect)
+            self.coordinates = {
+                "left": int(min(coords[0], coords[2])),
+                "top": int(min(coords[1], coords[3])),
+                "right": int(max(coords[0], coords[2])),
+                "bottom": int(max(coords[1], coords[3]))
+            }
+
+    def confirm_selection(self, event=None):
+        if self.coordinates:
+            save_config("map_coordinates", self.coordinates)
+            self.root.quit()
+            self.root.destroy()
+
+    def cancel_selection(self, event=None):
+        self.coordinates = None
+        self.root.quit()
+        self.root.destroy()
+
+    def get_coordinates(self):
+        self.root.mainloop()
+        return self.coordinates
+
 def check_version():
     api_url = "https://api.github.com/repos/Devil4ngle/SquadMortarOverlay/releases/latest"
     try:
@@ -68,51 +145,74 @@ class SettingsCallbacks:
         save_config("coordinates_visible", new_state)
         self.update_gui()
 
+    def countdown_and_select_map(self):
+        countdown_window = tk.Toplevel()
+        countdown_window.title("Countdown")
+        countdown_window.geometry("200x100")
+        countdown_window.attributes('-topmost', True)
+        
+        label = tk.Label(countdown_window, text="Starting in: 3", font=("Arial", 20))
+        label.pack(expand=True)
+        
+        def update_countdown(count):
+            if count > 0:
+                label.config(text=f"Starting in: {count}")
+                countdown_window.after(1000, update_countdown, count - 1)
+            else:
+                countdown_window.destroy()
+                selector = MapCoordinateSelector()
+                new_coordinates = selector.get_coordinates()
+                if new_coordinates:
+                    messagebox.showinfo(
+                        "Success",
+                        "Map coordinates have been updated."
+                    )
+        
+        update_countdown(3)
+
+    def select_map_area(self):
+        self.countdown_and_select_map()
+
 def create_gui(settings):
     root = tk.Tk()
     root.title(f"Squad Mortar Overlay {VERSION}")
     root.resizable(width=False, height=False)
     root.iconbitmap(get_icon_path())
 
-    # Create update callback for GUI elements
     def update_gui_elements():
         button_toggle_coordinates.config(
-            text="COORDINATES WINDOW: " + ("ON" if settings["coordinates_visible"] else "OFF")
+            text="Toggle Mortar Overlay Display: " + ("VISIBLE" if settings["coordinates_visible"] else "HIDDEN")
         )
         button_hotkey.config(
-            text="CHANGE OVERLAY HOTKEY: '" + settings["hotkey"] + "'"
+            text=f"Minimap Screenshot Hotkey: '{settings['hotkey']}'"
         )
         button_font_size.config(
-            text="CHANGE FONT SIZE: " + str(settings["font_size"])
+            text=f"Overlay Text Size: {settings['font_size']}px"
         )
         button_coordinates.config(
-            text=f"CHANGE COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}"
+            text=f"Overlay Window Position: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}"
         )
 
     callbacks = SettingsCallbacks(settings, update_gui_elements)
 
-    # Create text field
     text = tk.Text(root, wrap="word", height=10, state=tk.NORMAL, bg="black", fg="yellow")
     text.insert(tk.END, TEXT_CONTENT)
     text.config(state=tk.DISABLED)
     text.pack(expand=True, fill=tk.BOTH)
 
-    # Create frames
     frames = [tk.Frame(root, bg="black") for _ in range(3)]
-    
-    # Create buttons with consistent styling
     button_style = {"bg": "gray", "fg": "white"}
     
     # Frame 0 buttons
     button_toggle_coordinates = tk.Button(
         frames[0],
-        text="COORDINATES WINDOW: " + ("ON" if settings["coordinates_visible"] else "OFF"),
+        text="Toggle Mortar Overlay Display: " + ("VISIBLE" if settings["coordinates_visible"] else "HIDDEN"),
         command=callbacks.toggle_coordinate_window,
         **button_style
     )
     button_hotkey = tk.Button(
         frames[0],
-        text=f"CHANGE OVERLAY HOTKEY: '{settings['hotkey']}'",
+        text=f"Minimap Screenshot Hotkey: '{settings['hotkey']}'",
         command=callbacks.ask_hotkey,
         **button_style
     )
@@ -120,39 +220,45 @@ def create_gui(settings):
     # Frame 1 buttons
     button_font_size = tk.Button(
         frames[1],
-        text=f"CHANGE FONT SIZE: {settings['font_size']}",
+        text=f"Overlay Text Size: {settings['font_size']}px",
         command=callbacks.ask_font_size,
         **button_style
     )
     button_coordinates = tk.Button(
         frames[1],
-        text=f"CHANGE COORDINATES: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}",
+        text=f"Overlay Window Position: X:{settings['coordinates_x']} Y:{settings['coordinates_y']}",
         command=callbacks.ask_coordinates,
+        **button_style
+    )
+    button_map_area = tk.Button(
+        frames[1],
+        text="Configure Minimap Region",
+        command=callbacks.select_map_area,
         **button_style
     )
 
     # Frame 2 buttons
     button_github = tk.Button(
         frames[2],
-        text="GITHUB",
+        text="View Source Code (GitHub)",
         command=lambda: webbrowser.open("https://github.com/Devil4ngle/SquadMortarOverlay"),
         **button_style
     )
     button_discord = tk.Button(
         frames[2],
-        text="DISCORD",
+        text="Join Support Discord",
         command=lambda: webbrowser.open("https://discord.gg/ghrksNETNA"),
         **button_style
     )
     button_html = tk.Button(
         frames[2],
-        text="OPEN SquadCalc",
+        text="Open SquadCalc Website",
         command=lambda: webbrowser.open("https://squadcalc.app/"),
         **button_style
     )
     button_update = tk.Button(
         frames[2],
-        text="UPDATE",
+        text="Check for Updates",
         command=check_version,
         **button_style
     )
@@ -160,7 +266,7 @@ def create_gui(settings):
     # Pack buttons in frames
     for frame_idx, frame_buttons in enumerate([
         [button_toggle_coordinates, button_hotkey],
-        [button_font_size, button_coordinates],
+        [button_font_size, button_coordinates, button_map_area],
         [button_github, button_discord, button_update, button_html]
     ]):
         for i, button in enumerate(frame_buttons):

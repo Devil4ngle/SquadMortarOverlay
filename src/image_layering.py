@@ -83,13 +83,20 @@ def overlay_images(image_data, zoomed_in_image, map_name):
     return img_encoded.tobytes()
 
 def capture_screenshot():
-    screen_width, screen_height = pyautogui.size()
+    from config import get_map_coordinates
+    
     screenshot = pyautogui.screenshot()
     screenshot_cv = np.array(screenshot)
     screenshot_cv = cv2.cvtColor(screenshot_cv, cv2.COLOR_RGB2BGR)
     
-    game_resolution = (screen_width, screen_height)
-    coordinates = {
+    # Get custom coordinates from config
+    map_coords = get_map_coordinates()
+    
+    # If coordinates are not set (all zeros), fall back to resolution-based coordinates
+    if all(value == 0 for value in map_coords.values()):
+        screen_width, screen_height = pyautogui.size()
+        game_resolution = (screen_width, screen_height)
+        coordinates = {
         "2560x1440": {"mapCoordinates": [1001, 136, 2278, 1412]},
         "1920x1080": {"mapCoordinates": [751, 102, 1708, 1059]},
         "1920x1200": {"mapCoordinates": [728, 113, 1791, 1177]},
@@ -101,10 +108,19 @@ def capture_screenshot():
         "3840x2160": {"mapCoordinates": [1502, 204, 3417, 2119]},
     }
     
-    current_resolution = f"{game_resolution[0]}x{game_resolution[1]}"
-    map_coordinates = coordinates[current_resolution]["mapCoordinates"]
+           
+        current_resolution = f"{game_resolution[0]}x{game_resolution[1]}"
+        if current_resolution in coordinates:
+            map_coordinates = coordinates[current_resolution]["mapCoordinates"]
+            return screenshot_cv[
+                map_coordinates[1] : map_coordinates[3],
+                map_coordinates[0] : map_coordinates[2]
+            ]
+        else:
+            raise ValueError(f"Unsupported resolution: {current_resolution}")
     
+    # Use custom coordinates
     return screenshot_cv[
-        map_coordinates[1] : map_coordinates[3],
-        map_coordinates[0] : map_coordinates[2]
+        map_coords["top"] : map_coords["bottom"],
+        map_coords["left"] : map_coords["right"]
     ]
