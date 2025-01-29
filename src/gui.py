@@ -2,12 +2,18 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import webbrowser
 import requests
-from config import VERSION, save_config, get_icon_path
+from config import VERSION, save_config, get_icon_path, get_map_coordinates
 
-TEXT_CONTENT = """
- When pressing the overlay hotkey the Minimap in Squad must be 
- open (the Capslock one) with the side bar open. 
- Fully zoomed in screenshot on the Minimap might fail."""
+TEXT_CONTENT = """ First time setup: You need to configure the minimap Region. 
+ A 3-second countdown will start, switch to Squad, and draw a red square
+ over your minimap area (the Capslock one). 
+ Press Enter to confirm the selection
+ This will be saved even after restart in the config folder!
+
+ When pressing the Overlay screenshot hotkey:
+ - The Minimap in Squad must be open (the Capslock one) 
+ - Fully zoomed in/out screenshots on the Minimap might fail
+ """
 
 class MapCoordinateSelector:
     def __init__(self):
@@ -148,7 +154,7 @@ class SettingsCallbacks:
         update_all_windows(self.settings)
         self.update_gui()
 
-    def countdown_and_select_map(self):
+    def countdown_and_select_map(self, button_map_area):
         countdown_window = tk.Toplevel()
         countdown_window.title("Countdown")
         countdown_window.geometry("200x100")
@@ -170,11 +176,12 @@ class SettingsCallbacks:
                         "Success",
                         "Map coordinates have been updated."
                     )
+                    button_map_area.config(text="Configure Minimap Region (Set)")
         
         update_countdown(3)
 
-    def select_map_area(self):
-        self.countdown_and_select_map()
+    def select_map_area(self, button_map_area):
+        self.countdown_and_select_map(button_map_area)
         
 def create_gui(settings):
     root = tk.Tk()
@@ -233,10 +240,15 @@ def create_gui(settings):
         command=callbacks.ask_coordinates,
         **button_style
     )
+    
+    # Check if map coordinates are set
+    map_coords = get_map_coordinates()
+    is_map_configured = not all(value == 0 for value in map_coords.values())
+    
     button_map_area = tk.Button(
         frames[1],
-        text="Configure Minimap Region",
-        command=callbacks.select_map_area,
+        text="Configure Minimap Region" + (" (SET)" if is_map_configured else "(NOT SET)"),
+        command=lambda: callbacks.select_map_area(button_map_area),
         **button_style
     )
 

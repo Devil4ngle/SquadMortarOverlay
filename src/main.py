@@ -5,7 +5,6 @@ from config import load_config
 def main():
     # Load configuration
     config = load_config()
-    
     # Start websocket servers in separate threads
     start_websocket_servers(config)
     
