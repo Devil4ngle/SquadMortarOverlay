@@ -5,9 +5,6 @@ import requests
 from config import VERSION, save_config, get_icon_path
 
 TEXT_CONTENT = """
- When changing settings they will be applied upon 
- adding new mortar points on (SquadCalc).
-
  When pressing the overlay hotkey the Minimap in Squad must be 
  open (the Capslock one) with the side bar open. 
  Fully zoomed in screenshot on the Minimap might fail."""
