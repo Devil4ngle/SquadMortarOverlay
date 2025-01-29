@@ -44,6 +44,7 @@ class CoordinateWindow:
         
     def setup_window(self):
         self.window.overrideredirect(True)
+        # Set geometry before other window attributes
         self.window.geometry(f"+{self.settings['coordinates_x']}+{self.settings['coordinates_y']}")
         self.window.lift()
         self.window.wm_attributes("-topmost", True)
@@ -53,7 +54,10 @@ class CoordinateWindow:
         
         self.label = tk.Label(self.window, font=("Open Sans", self.settings["font_size"]))
         self.label.pack()
-        self.window.withdraw()
+        
+        # Only withdraw if coordinates are not visible
+        if not self.settings['coordinates_visible']:
+            self.window.withdraw()
         
     def update_settings(self, settings):
         self.settings = settings
@@ -66,7 +70,10 @@ class CoordinateWindow:
             self.window.withdraw()
         else:
             self.label.config(text=self.last_response)
+            # Make sure window position is updated before showing
+            self.window.geometry(f"+{self.settings['coordinates_x']}+{self.settings['coordinates_y']}")
             self.window.deiconify()
+            self.window.lift()  # Ensure window stays on top
             
     def update_coordinates(self, response):
         self.last_response = response
