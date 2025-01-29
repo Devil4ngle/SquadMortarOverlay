@@ -83,33 +83,34 @@ def update_all_windows(settings):
         window.update_settings(settings)
 
 async def handle_map(websocket, settings):
-    await websocket.send("Open")
-    global last_key_pressed
-    current_map_name = None
-    
-    while True:
-        if last_key_pressed == settings["hotkey"]:
-            last_key_pressed = None
-            zoomed_in_image = capture_screenshot()
-            
-            await websocket.send("Map")
-            new_map_name = await websocket.recv()
-            
-            image_data = None
-            if new_map_name != current_map_name or get_cached_image(new_map_name) is None:
-                await websocket.send("MapData")
-                image_data = await websocket.recv()
-                current_map_name = new_map_name
-            
-            modified_image_data = overlay_images(
-                image_data if image_data is not None else get_cached_image(current_map_name).tobytes(), 
-                zoomed_in_image, 
-                current_map_name
-            )
-            await websocket.send(modified_image_data)
-            await asyncio.sleep(0.5)
-        await asyncio.sleep(0.1)
-
+    try:
+        await websocket.send("Open")
+        global last_key_pressed
+        current_map_name = None
+        
+        while True:
+            if last_key_pressed == settings["hotkey"]:
+                last_key_pressed = None
+                zoomed_in_image = capture_screenshot()
+                
+                await websocket.send("Map")
+                new_map_name = await websocket.recv()
+                image_data = None
+                if new_map_name != current_map_name or get_cached_image(new_map_name) is None:
+                    await websocket.send("MapData")
+                    image_data = await websocket.recv()
+                    current_map_name = new_map_name
+                
+                modified_image_data = overlay_images(
+                    image_data if image_data is not None else get_cached_image(current_map_name).tobytes(), 
+                    zoomed_in_image, 
+                    current_map_name
+                )
+                await websocket.send(modified_image_data)
+                await asyncio.sleep(0.5)
+            await asyncio.sleep(0.1)
+    except websockets.exceptions.ConnectionClosed:
+        pass
 async def handle_coordinates(websocket, settings):
     try:
         await websocket.send("Open")
