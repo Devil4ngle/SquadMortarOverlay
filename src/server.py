@@ -15,6 +15,53 @@ def on_key_press(event):
 
 keyboard.on_press(on_key_press)
 
+class CoordinateWindow:
+    def __init__(self, settings):
+        self.window = tk.Toplevel()
+        self.settings = settings
+        self.last_response = ""
+        self.setup_window()
+        
+    def setup_window(self):
+        self.window.overrideredirect(True)
+        self.window.geometry(f"+{self.settings['coordinates_x']}+{self.settings['coordinates_y']}")
+        self.window.lift()
+        self.window.wm_attributes("-topmost", True)
+        self.window.wm_attributes("-disabled", True)
+        self.window.wm_attributes("-transparentcolor", "white")
+        self.window.wm_attributes("-toolwindow", True)
+        
+        self.label = tk.Label(self.window, font=("Open Sans", self.settings["font_size"]))
+        self.label.pack()
+        self.window.withdraw()
+        
+    def update_settings(self, settings):
+        self.settings = settings
+        self.label.config(font=("Open Sans", settings["font_size"]))
+        self.window.geometry(f"+{settings['coordinates_x']}+{settings['coordinates_y']}")
+        self.update_display()
+        
+    def update_display(self):
+        if not self.settings['coordinates_visible'] or not self.last_response:
+            self.window.withdraw()
+        else:
+            self.label.config(text=self.last_response)
+            self.window.deiconify()
+            
+    def update_coordinates(self, response):
+        self.last_response = response
+        self.update_display()
+
+# Global list to track all coordinate windows
+coordinate_windows = []
+
+def register_coordinate_window(window):
+    coordinate_windows.append(window)
+
+def update_all_windows(settings):
+    for window in coordinate_windows:
+        window.update_settings(settings)
+
 async def handle_map(websocket, settings):
     await websocket.send("Open")
     global last_key_pressed
@@ -46,40 +93,17 @@ async def handle_map(websocket, settings):
 async def handle_coordinates(websocket, settings):
     try:
         await websocket.send("Open")
-        coordinate_window = create_coordinate_window(settings)
-        label = tk.Label(coordinate_window, font=("Open Sans", settings["font_size"]))
-        label.pack()
-
+        coordinate_window = CoordinateWindow(settings)
+        register_coordinate_window(coordinate_window)
+        
         while True:
             response = await websocket.recv()
-            update_coordinate_window(coordinate_window, label, response, settings)
+            coordinate_window.update_coordinates(response)
             
     except websockets.exceptions.ConnectionClosed:
-        coordinate_window.withdraw()
-
-def create_coordinate_window(settings):
-    window = tk.Toplevel()
-    window.overrideredirect(True)
-    window.geometry(f"+{settings['coordinates_x']}+{settings['coordinates_y']}")
-    window.lift()
-    window.wm_attributes("-topmost", True)
-    window.wm_attributes("-disabled", True)
-    window.wm_attributes("-transparentcolor", "white")
-    window.wm_attributes("-toolwindow", True)
-    window.withdraw()
-    return window
-
-def update_coordinate_window(window, label, response, settings):
-    if not settings['coordinates_visible'] or not response:
-        window.withdraw()
-    else:
-        label.config(
-            text=response,
-            font=("Open Sans", settings["font_size"])
-        )
-        window.geometry(f"+{settings['coordinates_x']}+{settings['coordinates_y']}")
-        window.update_idletasks()
-        window.deiconify()
+        coordinate_window.window.withdraw()
+        if coordinate_window in coordinate_windows:
+            coordinate_windows.remove(coordinate_window)
 
 def start_server_loop(server_type, settings):
     async def start_map_server():

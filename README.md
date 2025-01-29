@@ -13,10 +13,6 @@
    
 ![image](https://github.com/Devil4ngle/SquadMortarOverlay/assets/101042789/2debdd3f-e5a2-4f13-9a59-fb48c6bd3b72)
 
-
-## Supported Screen Sizes
-1920x1080, 1920x1200, 2560x1080, 2560x1440, 2880x1620, 2560x1600, 3439x1439, 3440x1440, 3840x2160
-
 ## Unsupported Screen Size
 If your screen size is not supported, please join Discord so I will add it: 
 [Squadmortar Overlay Discord](https://discord.gg/Qc5y4satdz).

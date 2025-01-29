@@ -117,6 +117,8 @@ class SettingsCallbacks:
         if font_size:
             self.settings["font_size"] = font_size
             save_config("font_size", font_size)
+            from server import update_all_windows
+            update_all_windows(self.settings)
             self.update_gui()
 
     def ask_hotkey(self):
@@ -134,12 +136,16 @@ class SettingsCallbacks:
             self.settings["coordinates_y"] = new_y
             save_config("coordinates_x", new_x)
             save_config("coordinates_y", new_y)
+            from server import update_all_windows
+            update_all_windows(self.settings)
             self.update_gui()
 
     def toggle_coordinate_window(self):
         new_state = not self.settings["coordinates_visible"]
         self.settings["coordinates_visible"] = new_state
         save_config("coordinates_visible", new_state)
+        from server import update_all_windows
+        update_all_windows(self.settings)
         self.update_gui()
 
     def countdown_and_select_map(self):
@@ -169,7 +175,7 @@ class SettingsCallbacks:
 
     def select_map_area(self):
         self.countdown_and_select_map()
-
+        
 def create_gui(settings):
     root = tk.Tk()
     root.title(f"Squad Mortar Overlay {VERSION}")
