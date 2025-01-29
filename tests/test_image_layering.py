@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
-from scripts.image_layering import capture_screenshot
+from src.image_layering import capture_screenshot
 
 windows = gw.getWindowsWithTitle("SquadGame")
 window = windows[0]

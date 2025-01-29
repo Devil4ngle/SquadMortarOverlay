@@ -27,7 +27,7 @@ No, this program won't get you banned. Here's why it's completely safe:
 The program is just a transparent window that sits on top of your screen, similar to having a calculator window open. It never interacts with Squad in any way - it doesn't inject code, read memory, or send inputs/keystrokes to the game. 
 
 Looking at the code:
-- It only takes screenshots of what's already on your screen using pyautogui.screenshot() in image_layering.py [(look here)](https://github.com/Devil4ngle/SquadMortarOverlay/blob/main/scripts/image_layering.py) - no different than using Windows' built-in screenshot tools like PrintScreen or Snipping Tool
+- It only takes screenshots of what's already on your screen using pyautogui.screenshot() in image_layering.py [(look here)](https://github.com/Devil4ngle/SquadMortarOverlay/blob/main/src/image_layering.py) - no different than using Windows' built-in screenshot tools like PrintScreen or Snipping Tool
 
 - Creates a transparent overlay window using standard Windows functionality (tkinter)
 
